@@ -16,6 +16,9 @@
     "isolatedModules": true,
     "moduleResolution": "node"
   },
-  "include": ["src/**/*"], 
+  "include": [
+    "next-env.d.ts",
+    "src/**/*"
+  ], 
   "exclude": ["node_modules"]
 }
