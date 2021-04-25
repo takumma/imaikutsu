@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyA1JO6wDzzpYQefMB6vJRrfg58_gjALY3U",
   authDomain: "imaikutsu.firebaseapp.com",
   projectId: "imaikutsu",
@@ -9,8 +9,9 @@ var firebaseConfig = {
   appId: "1:607654962168:web:06efe8f53c27bec80c2c0d"
 };
 
-firebase.initializeApp(firebaseConfig);
 
-module.exports = {
-  
-}
+const app = !firebase.apps.length
+  ? firebase.initializeApp(firebaseConfig)
+  : firebase.app()
+
+export default app
