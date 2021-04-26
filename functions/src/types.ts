@@ -1,6 +1,7 @@
 export interface User {
   accessToken: string;
   secret: string;
-  TwitterID: string;
-  userName: string;
+  id: number;
+  name: string;
+  screenName: string;
 }

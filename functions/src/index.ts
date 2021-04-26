@@ -17,10 +17,11 @@ export const getMentalValue = functions.https.onRequest(async (request, response
     querySnapShot.forEach((doc) => {
       const data = doc.data()
       users.push({
-        TwitterID: data.TwitterID,
         accessToken: data.accessToken,
         secret: data.secret,
-        userName: data.userName,
+        id: data.id,
+        name: data.name,
+        screenName: data.screenName,
       });
     })
     return users;
@@ -29,21 +30,22 @@ export const getMentalValue = functions.https.onRequest(async (request, response
   const consumerkey = functions.config().functions.consumer_key
   const consumerSecret = functions.config().functions.consumer_secret
   users.forEach((user) => {
+    console.log(user)
     const client = new Twitter({
       consumer_key: consumerkey,
       consumer_secret: consumerSecret,
       access_token_key: user.accessToken,
       access_token_secret: user.secret
     });
-    const params = { screen_name: user.TwitterID };
+    const params = { user_id: user.id };
     client.get('users/show', params, (error, resp) => {
-      if (error)
-        console.error(error);
-      console.log(resp.name);
+      if (error) {
+        console.error(error)
+        return
+      }
       response.send({
         mentalValue: getMentalValueFromName(resp.name),
         users: users,
-        test2: resp.name
       });
     })
   })
