@@ -1,7 +1,8 @@
 export interface User {
   accessToken: string;
   secret: string;
-  TwitterID: string;
-  userName: string;
+  id: string;
+  name: string;
+  screenName: string;
   isActive: boolean;
 }
