@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin'
 import { User } from './types';
+import Twitter from 'twitter';
 
 const serviceAccount = require("../serviceAccountKey.json");
 
@@ -24,12 +25,28 @@ export const getMentalValue = functions.https.onRequest(async (request, response
     })
     return users;
   })
-  
-  const num = getMentalValueFromName((request.query as any).name!)
-  response.send({
-    mentalValue: num,
-    users: users
-  });
+
+  const consumerkey = functions.config().functions.consumer_key
+  const consumerSecret = functions.config().functions.consumer_secret
+  users.forEach((user) => {
+    const client = new Twitter({
+      consumer_key: consumerkey,
+      consumer_secret: consumerSecret,
+      access_token_key: user.accessToken,
+      access_token_secret: user.secret
+    });
+    const params = { screen_name: user.TwitterID };
+    client.get('users/show', params, (error, resp) => {
+      if (error)
+        console.error(error);
+      console.log(resp.name);
+      response.send({
+        mentalValue: getMentalValueFromName(resp.name),
+        users: users,
+        test2: resp.name
+      });
+    })
+  })
 });
 
 const getMentalValueFromName = (name: string): number | null => {
