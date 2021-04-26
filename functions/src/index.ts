@@ -1,13 +1,12 @@
 import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin'
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const helloWorld = functions.https.onRequest((request, response) => {
-  response.send("Hello from Firebase!");
-});
+admin.initializeApp()
 
-export const getMentalValue = functions.https.onRequest((request, response) => {
+export const getMentalValue = functions.https.onRequest(async (request, response) => {
+
+  const resp = await admin.firestore().collection('users').get()
+  console.log(resp)
   
   const num = getMentalValueFromName((request.query as any).name!)
   response.send({
