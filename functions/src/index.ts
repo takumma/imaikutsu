@@ -10,9 +10,42 @@ admin.initializeApp({
   databaseURL: 'firebase-adminsdk-qhq36@imaikutsu.iam.gserviceaccount.com'
 })
 
+export const test = functions.https.onRequest((request, response) => {
+  response.send({
+    msg: "test"
+  })
+})
+
 export const getMentalValue = functions.https.onRequest(async (request, response) => {
 
-  const users: User[] = await admin.firestore().collection('users').where("isActive", "==", true).get().then((querySnapShot) => {
+  const users: User[] = await getActiveUsers();
+  console.log(users);
+
+  const consumerkey = functions.config().functions.consumer_key
+  const consumerSecret = functions.config().functions.consumer_secret
+  users.forEach((user) => {
+    const client = new Twitter({
+      consumer_key: consumerkey,
+      consumer_secret: consumerSecret,
+      access_token_key: user.accessToken,
+      access_token_secret: user.secret
+    });
+    const params = { screen_name: user.screenName };
+    client.get('users/show', params, (error, resp) => {
+      if (error) {
+        console.error(error)
+        errorResponse(response,error)
+      }
+    })
+  })
+  response.send({
+    users: users,
+  });
+});
+
+const getActiveUsers = async (): Promise<User[]> => {
+  return admin.firestore().collection('users').where("isActive", "==", true).get()
+  .then((querySnapShot) => {
     let users: User[] = []
     querySnapShot.forEach((doc) => {
       const data = doc.data()
@@ -26,32 +59,7 @@ export const getMentalValue = functions.https.onRequest(async (request, response
     })
     return users;
   })
-
-  const consumerkey = functions.config().functions.consumer_key
-  const consumerSecret = functions.config().functions.consumer_secret
-  let userNames: (string | null)[] = [];
-  users.forEach((user) => {
-    const client = new Twitter({
-      consumer_key: consumerkey,
-      consumer_secret: consumerSecret,
-      access_token_key: user.accessToken,
-      access_token_secret: user.secret
-    });
-    const params = { screen_name: user.screenName };
-    client.get('users/show', params, (error, resp) => {
-      if (error) {
-        console.error(error)
-        return
-      }
-      userNames.push(resp.name)
-    })
-  })
-  const mentalValues = userNames.map((userName) => getMentalValueFromName(userName))
-  response.send({
-    mentalValues: mentalValues,
-    users: users,
-  });
-});
+}
 
 const getMentalValueFromName = (name: string | null): number | null => {
   if(name === null) return null;
@@ -66,4 +74,10 @@ const getMentalValueFromName = (name: string | null): number | null => {
     if(doubleDigit > 10) return singleDigit
     else return doubleDigit
   }
+}
+
+const errorResponse = (response: any, error: any) => {
+  response.send({
+    error: error
+  })
 }
