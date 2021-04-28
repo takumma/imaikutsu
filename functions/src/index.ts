@@ -29,29 +29,33 @@ export const getMentalValue = functions.https.onRequest(async (request, response
 
   const consumerkey = functions.config().functions.consumer_key
   const consumerSecret = functions.config().functions.consumer_secret
+  let userNames: (string | null)[] = [];
   users.forEach((user) => {
-    console.log(user)
     const client = new Twitter({
       consumer_key: consumerkey,
       consumer_secret: consumerSecret,
       access_token_key: user.accessToken,
       access_token_secret: user.secret
     });
-    const params = { user_id: user.id };
+    const params = { screen_name: user.screenName };
     client.get('users/show', params, (error, resp) => {
       if (error) {
         console.error(error)
         return
       }
-      response.send({
-        mentalValue: getMentalValueFromName(resp.name),
-        users: users,
-      });
+      userNames.push(resp.name)
     })
   })
+  const mentalValues = userNames.map((userName) => getMentalValueFromName(userName))
+  response.send({
+    mentalValues: mentalValues,
+    users: users,
+  });
 });
 
-const getMentalValueFromName = (name: string): number | null => {
+const getMentalValueFromName = (name: string | null): number | null => {
+  if(name === null) return null;
+  
   const doubleDigit = Number(name.slice(-2))
   const singleDigit = Number(name.slice(-1))
 
