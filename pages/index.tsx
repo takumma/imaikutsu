@@ -1,27 +1,30 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import OAuthButton from '../components/OAuthButton'
+import { Box, HStack,Button, ButtonGroup } from "@chakra-ui/react"
+import { FaTwitter } from 'react-icons/fa';
 
 export default function Home() {
   return (
+    <Box bg='#FFDE59'>
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>いまいくつ?</title>
       </Head>
-
-      <OAuthButton></OAuthButton>
-
+      
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
         <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+          あなたのきもちをすうじておしえて
         </p>
-
+        <h1 className={styles.title}>
+          いまいくつ？
+        </h1>
+        <Box m={[10, 10]} />
+        <HStack>
+          <Button colorScheme="twitter" leftIcon={<FaTwitter />}>
+            <OAuthButton></OAuthButton>
+          </Button>
+        </HStack>
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
@@ -64,5 +67,6 @@ export default function Home() {
         </a>
       </footer>
     </div>
+    </Box>
   )
 }
