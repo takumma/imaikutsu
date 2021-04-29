@@ -10,50 +10,34 @@ admin.initializeApp({
   databaseURL: 'firebase-adminsdk-qhq36@imaikutsu.iam.gserviceaccount.com'
 })
 
-export const test = functions.https.onRequest((request, response) => {
-  response.send({
-    msg: "test"
-  })
-})
+const firestore = admin.firestore()
+
+const consumerkey = functions.config().functions.consumer_key
+const consumerSecret = functions.config().functions.consumer_secret
+const accessTokenKey = functions.config().functions.access_token_key
+const accessTokenSecret = functions.config().functions.access_token_secret
+
 
 export const getMentalValue = functions.https.onRequest(async (request, response) => {
 
-  const users: User[] = await getActiveUsers();
-  console.log(users);
-
-  const consumerkey = functions.config().functions.consumer_key
-  const consumerSecret = functions.config().functions.consumer_secret
-  users.forEach((user) => {
-    const client = new Twitter({
-      consumer_key: consumerkey,
-      consumer_secret: consumerSecret,
-      access_token_key: user.accessToken,
-      access_token_secret: user.secret
+  await getActiveUsers().then((users: User[]) => {
+    showRequest(users)
+    
+    response.send({
+      users: users,
     });
-    const params = { screen_name: user.screenName };
-    client.get('users/show', params, (error, resp) => {
-      if (error) {
-        console.error(error)
-        errorResponse(response,error)
-      }
-    })
   })
-  response.send({
-    users: users,
-  });
 });
 
 const getActiveUsers = async (): Promise<User[]> => {
-  return admin.firestore().collection('users').where("isActive", "==", true).get()
+  return firestore.collection('users').where("isActive", "==", true).get()
   .then((querySnapShot) => {
     let users: User[] = []
     querySnapShot.forEach((doc) => {
       const data = doc.data()
       users.push({
-        accessToken: data.accessToken,
-        secret: data.secret,
+        uid: data.uid,
         id: data.id,
-        name: data.name,
         screenName: data.screenName,
       });
     })
@@ -63,36 +47,27 @@ const getActiveUsers = async (): Promise<User[]> => {
 
 const showRequest = (users: User[]) => {
   const MaxParallelNum = 5;
-  const results = []
-  const consumerkey = functions.config().functions.consumer_key
-  const consumerSecret = functions.config().functions.consumer_secret
+  
   const client = new Twitter({
     consumer_key: consumerkey,
     consumer_secret: consumerSecret,
-    access_token_key: users[0].accessToken,
-    access_token_secret: users[0].secret
+    access_token_key: accessTokenKey,
+    access_token_secret: accessTokenSecret
   });
+
   for (let i = 0; i < users.length; i += MaxParallelNum) {
     const requests = users.slice(i, i + MaxParallelNum).map((user) => (async () => {
-      await client.get('users/show', { screen_name: user.screenName })
+      const resp = await client.get('users/show', { screen_name: user.screenName })
+      const mentalValue = getMentalValueFromName(resp.name)
+      if (mentalValue) {
+        firestore.collection('graphs').doc(user.uid).set({
+          'date': mentalValue
+        }, { merge: true })
+      }
     })())
     Promise.all(requests);
   }
 }
-
-const sendShowRequest = async (user: User) => {
-  return user;
-}
-
-const lookupRequest = (users: User[]) => {
-  const MaxUsersNum = 99;
-  const results = []
-  for (let i = 0; i < users.length; i += MaxUsersNum) {
-    const params = users.slice(i, i + MaxUsersNum).map((user) => user.screenName)
-    results.push(params);
-  }
-}
-
 
 const getMentalValueFromName = (name: string | null): number | null => {
   if(name === null) return null;
@@ -109,8 +84,18 @@ const getMentalValueFromName = (name: string | null): number | null => {
   }
 }
 
-const errorResponse = (response: any, error: any) => {
-  response.send({
-    error: error
-  })
-}
+
+// const lookupRequest = (users: User[]) => {
+//   const MaxUsersNum = 99;
+//   const results = []
+//   for (let i = 0; i < users.length; i += MaxUsersNum) {
+//     const params = users.slice(i, i + MaxUsersNum).map((user) => user.screenName)
+//     results.push(params);
+//   }
+// }
+
+// const errorResponse = (response: any, error: any) => {
+//   response.send({
+//     error: error
+//   })
+// }

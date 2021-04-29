@@ -1,7 +1,5 @@
 export interface User {
-  accessToken: string;
-  secret: string;
-  id: number;
-  name: string;
+  uid: string;
+  id: string;
   screenName: string;
 }
