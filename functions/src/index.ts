@@ -17,12 +17,17 @@ const consumerSecret = functions.config().functions.consumer_secret
 const accessTokenKey = functions.config().functions.access_token_key
 const accessTokenSecret = functions.config().functions.access_token_secret
 
+exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronized').onRun(((context) => {
+  getActiveUsers().then((users) => {
+    showRequest(users, context.timestamp)
+  })
+}))
 
-export const getMentalValue = functions.https.onRequest(async (request, response) => {
+export const getMentalValue = functions.https.onRequest((request, response) => {
 
-  await getActiveUsers().then((users: User[]) => {
-    showRequest(users)
-    
+  getActiveUsers().then((users) => {
+    showRequest(users, new Date().toISOString())
+
     response.send({
       users: users,
     });
@@ -45,7 +50,8 @@ const getActiveUsers = async (): Promise<User[]> => {
   })
 }
 
-const showRequest = (users: User[]) => {
+const showRequest = (users: User[], timeStamp: string) => {
+
   const MaxParallelNum = 5;
   
   const client = new Twitter({
@@ -60,9 +66,9 @@ const showRequest = (users: User[]) => {
       const resp = await client.get('users/show', { screen_name: user.screenName })
       const mentalValue = getMentalValueFromName(resp.name)
       if (mentalValue) {
-        firestore.collection('graphs').doc(user.uid).set({
-          'date': mentalValue
-        }, { merge: true })
+        firestore.collection('graphs').doc(user.uid).update({
+          mentalValues: admin.firestore.FieldValue.arrayUnion({ time_stamp: timeStamp, value: mentalValue })
+        })
       }
     })())
     Promise.all(requests);
