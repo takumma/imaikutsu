@@ -61,6 +61,39 @@ const getActiveUsers = async (): Promise<User[]> => {
   })
 }
 
+const showRequest = (users: User[]) => {
+  const MaxParallelNum = 5;
+  const results = []
+  const consumerkey = functions.config().functions.consumer_key
+  const consumerSecret = functions.config().functions.consumer_secret
+  const client = new Twitter({
+    consumer_key: consumerkey,
+    consumer_secret: consumerSecret,
+    access_token_key: users[0].accessToken,
+    access_token_secret: users[0].secret
+  });
+  for (let i = 0; i < users.length; i += MaxParallelNum) {
+    const requests = users.slice(i, i + MaxParallelNum).map((user) => (async () => {
+      await client.get('users/show', { screen_name: user.screenName })
+    })())
+    Promise.all(requests);
+  }
+}
+
+const sendShowRequest = async (user: User) => {
+  return user;
+}
+
+const lookupRequest = (users: User[]) => {
+  const MaxUsersNum = 99;
+  const results = []
+  for (let i = 0; i < users.length; i += MaxUsersNum) {
+    const params = users.slice(i, i + MaxUsersNum).map((user) => user.screenName)
+    results.push(params);
+  }
+}
+
+
 const getMentalValueFromName = (name: string | null): number | null => {
   if(name === null) return null;
   
