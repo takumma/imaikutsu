@@ -28,20 +28,20 @@ const accessTokenSecret = functions.config().functions.access_token_secret
 
 
 // Scheduler of request about mentalValues
-exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronized').onRun(((context) => {
+exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronized').onRun((context) => {
   const timestamp = dayjs(context.timestamp).format('YYYY-MM-DD-HH-mm-ss')
 
-  getActiveUsers().then((users) => {
+  void getActiveUsers().then((users) => {
     showRequest(users, timestamp)
   })
-}))
+})
 
 
 // // test of scheduler
 // export const getMentalValue = functions.https.onRequest((request, response) => {
 //   const timestamp = dayjs().format('YYYY-MM-DD-HH-mm-ss')
 
-//   getActiveUsers().then((users) => {
+//   void getActiveUsers().then((users) => {
 //     showRequest(users, timestamp)
 
 //     response.send({
@@ -54,7 +54,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronize
 const getActiveUsers = async (): Promise<User[]> => {
   return firestore.collection('users').where("isActive", "==", true).get()
   .then((querySnapShot) => {
-    let users: User[] = []
+    const users: User[] = []
     querySnapShot.forEach((doc) => {
       const data = doc.data()
       users.push({
@@ -94,7 +94,7 @@ const showRequest = (users: User[], timeStamp: string) => {
       }
     })())
 
-    Promise.all(requests);
+    void Promise.all(requests);
   }
 }
 
