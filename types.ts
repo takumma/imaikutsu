@@ -1,8 +1,6 @@
 export interface User {
-  accessToken: string;
-  secret: string;
+  uid: string;
   id: string;
-  name: string;
   screenName: string;
   isActive: boolean;
 }

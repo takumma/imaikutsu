@@ -9,21 +9,19 @@ const OAuthButton = () => {
   const signInWithTwitter = async () => {
     try {
       if(location) {
-        const result = await firebase.auth().signInWithPopup(new firebase.auth.TwitterAuthProvider())
-        const credential: { accessToken: string, secret: string } = result.credential as any
-        console.log(result.additionalUserInfo)
+        const resp = await firebase.auth().signInWithPopup(new firebase.auth.TwitterAuthProvider())
         const userData: User = {
-          accessToken: credential.accessToken,
-          secret: credential.secret,
-          id: result.additionalUserInfo.profile['id'],
-          name: result.additionalUserInfo.profile['name'],
-          screenName: result.additionalUserInfo.username,
+          uid: resp.user.uid,
+          id: resp.additionalUserInfo.profile['id'],
+          screenName: resp.additionalUserInfo.username,
           isActive: true,
         }
         const firestore = firebase.firestore();
-        const ref = firestore.collection('users').doc(result.user.uid)
+        const ref = firestore.collection('users').doc(resp.user.uid)
         await ref.set({ ...userData })
         console.log('seccess')
+      } else {
+        throw Error('Error!')
       }
     } catch (err) {
       console.error(err);
