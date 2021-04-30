@@ -32,7 +32,7 @@ const OAuthButton = () => {
 
   return (
     <button onClick={() => signInWithTwitter()}>
-      Twitter認証
+      Twitterでログイン
     </button>
   )
 }
