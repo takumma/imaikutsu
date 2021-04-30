@@ -3,8 +3,17 @@ import * as admin from 'firebase-admin'
 import { User } from './types';
 import Twitter from 'twitter';
 
-const serviceAccount = require("../serviceAccountKey.json");
+// setting about dayjs
+import dayjs from 'dayjs'
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.tz.setDefault("Asia/Tokyo");
 
+
+// setting about firebase
+const serviceAccount = require("../serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'firebase-adminsdk-qhq36@imaikutsu.iam.gserviceaccount.com'
@@ -17,23 +26,31 @@ const consumerSecret = functions.config().functions.consumer_secret
 const accessTokenKey = functions.config().functions.access_token_key
 const accessTokenSecret = functions.config().functions.access_token_secret
 
+
+// Scheduler of request about mentalValues
 exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronized').onRun(((context) => {
+  const timestamp = dayjs(context.timestamp).format('YYYY-MM-DD-HH-mm-ss')
+
   getActiveUsers().then((users) => {
-    showRequest(users, context.timestamp)
+    showRequest(users, timestamp)
   })
 }))
 
-export const getMentalValue = functions.https.onRequest((request, response) => {
 
-  getActiveUsers().then((users) => {
-    showRequest(users, new Date().toISOString())
+// // test of scheduler
+// export const getMentalValue = functions.https.onRequest((request, response) => {
+//   const timestamp = dayjs().format('YYYY-MM-DD-HH-mm-ss')
 
-    response.send({
-      users: users,
-    });
-  })
-});
+//   getActiveUsers().then((users) => {
+//     showRequest(users, timestamp)
 
+//     response.send({
+//       users: users,
+//     });
+//   })
+// });
+
+// get active user (isActive == true) from firestore
 const getActiveUsers = async (): Promise<User[]> => {
   return firestore.collection('users').where("isActive", "==", true).get()
   .then((querySnapShot) => {
@@ -61,20 +78,27 @@ const showRequest = (users: User[], timeStamp: string) => {
     access_token_secret: accessTokenSecret
   });
 
+  // Get the name from twitter for each user,
+  // And add mentalValue taken from name to firestore array with timestamp.
   for (let i = 0; i < users.length; i += MaxParallelNum) {
     const requests = users.slice(i, i + MaxParallelNum).map((user) => (async () => {
       const resp = await client.get('users/show', { screen_name: user.screenName })
       const mentalValue = getMentalValueFromName(resp.name)
       if (mentalValue) {
-        firestore.collection('graphs').doc(user.uid).update({
-          mentalValues: admin.firestore.FieldValue.arrayUnion({ time_stamp: timeStamp, value: mentalValue })
+        await firestore.collection('graphs').doc(user.uid).update({
+          mentalValues: admin.firestore.FieldValue.arrayUnion({
+            time_stamp: timeStamp,
+            value: mentalValue
+          })
         })
       }
     })())
+
     Promise.all(requests);
   }
 }
 
+// Get the mental value from the end of the name.
 const getMentalValueFromName = (name: string | null): number | null => {
   if(name === null) return null;
   
@@ -98,10 +122,4 @@ const getMentalValueFromName = (name: string | null): number | null => {
 //     const params = users.slice(i, i + MaxUsersNum).map((user) => user.screenName)
 //     results.push(params);
 //   }
-// }
-
-// const errorResponse = (response: any, error: any) => {
-//   response.send({
-//     error: error
-//   })
 // }
