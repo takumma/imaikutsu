@@ -28,8 +28,8 @@ const accessTokenSecret = functions.config().functions.access_token_secret
 
 
 // Scheduler of request about mentalValues
-exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronized').onRun((context) => {
-  const timestamp = dayjs(context.timestamp).format('YYYY-MM-DD-HH-mm-ss')
+exports.scheduledFunction = functions.region('asia-northeast1').pubsub.schedule('every 3 hours synchronized').onRun((context) => {
+  const timestamp = dayjs().format('YYYY-MM-DD-HH-mm-ss')
 
   void getActiveUsers().then((users) => {
     showRequest(users, timestamp)
