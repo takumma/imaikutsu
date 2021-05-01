@@ -3,14 +3,14 @@ import * as admin from 'firebase-admin'
 import { User } from './types';
 import Twitter from 'twitter';
 
-// setting about dayjs
+// setting about dayjs and timezone
 import dayjs from 'dayjs'
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(timezone);
 dayjs.extend(utc);
 dayjs.tz.setDefault("Asia/Tokyo");
-
+process.env.TZ = 'Asia/Tokyo';
 
 // setting about firebase
 const serviceAccount = require("../serviceAccountKey.json");
@@ -28,13 +28,17 @@ const accessTokenSecret = functions.config().functions.access_token_secret
 
 
 // Scheduler of request about mentalValues
-exports.scheduledFunction = functions.region('asia-northeast1').pubsub.schedule('every 3 hours synchronized').onRun((context) => {
-  const timestamp = dayjs().format('YYYY-MM-DD-HH-mm-ss')
+exports.scheduledFunction = functions
+  .region('asia-northeast1')
+  .pubsub.schedule('every 3 hours synchronized')
+  .timeZone('Asia/Tokyo')
+  .onRun((context) => {
+    const timestamp = dayjs().format('YYYY-MM-DD-HH-mm-ss')
 
-  void getActiveUsers().then((users) => {
-    showRequest(users, timestamp)
+    void getActiveUsers().then((users) => {
+      showRequest(users, timestamp)
+    })
   })
-})
 
 
 // // test of scheduler
