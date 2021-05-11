@@ -11,7 +11,7 @@ export default function UserPage() {
     <Box bg='#FFDE59'>
       <div className={styles.container}>
         { user }
-        <Graph/>
+        <Graph user={user}/>
       </div>
     </Box>
   )

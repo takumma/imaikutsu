@@ -33,7 +33,7 @@ exports.scheduledFunction = functions
   .pubsub.schedule('every 6 hours synchronized')
   .timeZone('Asia/Tokyo')
   .onRun((context) => {
-    const timestamp = dayjs().format('YYYY-MM-DD-HH-mm')
+    const timestamp = dayjs().tz().format('YYYY-MM-DD-HH-mm')
 
     void getActiveUsers().then((users) => {
       showRequest(users, timestamp)
