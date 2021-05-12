@@ -6,35 +6,26 @@ import { useRouter } from 'next/router';
 import firebase from '../utils/firebase'
 import useSWR from "swr";
 
-const firestore = firebase.firestore()
-
 
 const UserPage = () => {
-  const router = useRouter();
-  const { user } = router.query;
+  const { query, isReady } = useRouter()
 
-  const getGraph = async () => {
-    return await firestore.collection('graphs').where("screen_name", "==", user).limit(1).get().then((snapshot) => {
-      snapshot.forEach((doc) => {
-        console.log('res')
-        const mentalValues = doc.data().mentalValues
-        if (!mentalValues) return []
-        return mentalValues        
-      })
-    })
-    .catch((err) => {
-      console.error(err)
-      return []
-    });
-  }
+  if (!isReady) return 'loading'
+  const user = query.user
 
-  const { data, error } = useSWR('getgraph', getGraph)
+  const { data, error } = useSWR(`${user}`, getGraph, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+})
+
+  if (error) return `"An error has occurred."${error}`;
+  if (!data) return "Loading...";
 
   return (
     <Box bg='#FFDE59'>
       <div className={styles.container}>
         { user }
-        <Button onClick={() => getGraph()}>get</Button>
+        <Button onClick={() => getGraph(`${user}`)}>get</Button>
         <Graph data={data}/>
       </div>
     </Box>
@@ -42,3 +33,23 @@ const UserPage = () => {
 }
 
 export default UserPage
+
+const getGraph = async (user: string) => {
+  const collection = firebase.firestore().collection('graphs')
+
+  console.log(collection)
+  console.log(user)
+
+  return await collection.where("screen_name", "==", `${user}`).limit(1).get().then((snapshot) => {
+    let result = []
+    snapshot.forEach((doc) => {
+      const mentalValues = doc.data().mentalValues
+      if(mentalValues) result = mentalValues
+    })
+    return result
+  })
+  .catch((err) => {
+    console.error(err)
+    return []
+  });
+}
