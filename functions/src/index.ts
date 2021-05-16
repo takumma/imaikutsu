@@ -30,7 +30,7 @@ const accessTokenSecret = functions.config().functions.access_token_secret
 // Scheduler of request about mentalValues
 exports.scheduledFunction = functions
   .region('asia-northeast1')
-  .pubsub.schedule('every 24 hours')
+  .pubsub.schedule('0 0 * * *')
   .timeZone('Asia/Tokyo')
   .onRun((context) => {
     const timestamp = dayjs().tz().format('YYYY-MM-DD-HH-mm')
