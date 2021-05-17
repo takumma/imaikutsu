@@ -3,14 +3,14 @@ import * as admin from 'firebase-admin'
 import { User } from './types';
 import Twitter from 'twitter';
 
-// setting about dayjs
+// setting about dayjs and timezone
 import dayjs from 'dayjs'
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(timezone);
 dayjs.extend(utc);
 dayjs.tz.setDefault("Asia/Tokyo");
-
+process.env.TZ = 'Asia/Tokyo';
 
 // setting about firebase
 const serviceAccount = require("../serviceAccountKey.json");
@@ -28,27 +28,18 @@ const accessTokenSecret = functions.config().functions.access_token_secret
 
 
 // Scheduler of request about mentalValues
-exports.scheduledFunction = functions.pubsub.schedule('every 6 hours synchronized').onRun((context) => {
-  const timestamp = dayjs(context.timestamp).format('YYYY-MM-DD-HH-mm-ss')
+exports.scheduledFunction = functions
+  .region('asia-northeast1')
+  .pubsub.schedule('0 0 * * *')
+  .timeZone('Asia/Tokyo')
+  .onRun((context) => {
+    const timestamp = dayjs().tz().format('YYYY-MM-DD-HH-mm')
 
-  void getActiveUsers().then((users) => {
-    showRequest(users, timestamp)
+    void getActiveUsers().then((users) => {
+      showRequest(users, timestamp)
+    })
   })
-})
 
-
-// // test of scheduler
-// export const getMentalValue = functions.https.onRequest((request, response) => {
-//   const timestamp = dayjs().format('YYYY-MM-DD-HH-mm-ss')
-
-//   void getActiveUsers().then((users) => {
-//     showRequest(users, timestamp)
-
-//     response.send({
-//       users: users,
-//     });
-//   })
-// });
 
 // get active user (isActive == true) from firestore
 const getActiveUsers = async (): Promise<User[]> => {
@@ -66,6 +57,7 @@ const getActiveUsers = async (): Promise<User[]> => {
     return users;
   })
 }
+
 
 const showRequest = (users: User[], timeStamp: string) => {
 

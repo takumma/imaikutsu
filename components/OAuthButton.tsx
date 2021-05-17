@@ -1,7 +1,5 @@
 import React from 'react'
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/firestore'
+import firebase from '../utils/firebase'
 import { User } from '../types';
 
 const OAuthButton = () => {
