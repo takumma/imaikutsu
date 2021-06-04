@@ -1,6 +1,8 @@
 import { Box, Button } from "@chakra-ui/react"
 import styles from '../styles/Home.module.css'
 import Graph from '../components/Graph'
+import Loading from '../components/Loading'
+import Error from '../components/Error'
 import { useRouter } from 'next/router';
 
 import useSWR from "swr";
@@ -16,16 +18,18 @@ const UserPage = () => {
   const { data, error } = useSWR(`${user}`, getGraph, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false
-})
-
-  if (error) return `"An error has occurred."${error}`;
-  if (!data) return "Loading...";
+  })
 
   return (
     <Box bg='#FFDE59'>
       <div className={styles.container}>
-        { user }
-        <Graph data={data}/>
+        {error ? (
+          <Error msg={`An error has occurred.${error}`}></Error>
+        ) : !data ? (
+          <Loading />
+        ) : (
+          <Graph data={data}/>
+        )}
       </div>
     </Box>
   )
