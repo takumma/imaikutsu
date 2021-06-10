@@ -1,13 +1,16 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import OAuthButton from '../components/OAuthButton'
-import { Box, HStack,Button } from "@chakra-ui/react"
-import { FaTwitter } from 'react-icons/fa';
+import { Box, HStack } from "@chakra-ui/react"
+import firebase from '../utils/firebase'
 
 export default function Home() {
+
+  const user = firebase.auth().currentUser;
+  console.log(user?.displayName)
+
   return (
-    <Box bg='#FFDE59'>
-    <div className={styles.container}>
+    <Box bg='#FFDE59' className={styles.container}>
       <Head>
         <title>いまいくつ?</title>
       </Head>
@@ -20,24 +23,16 @@ export default function Home() {
           いまいくつ？
         </h1>
         <Box m={[10, 10]} />
-        <HStack>
-          <Button colorScheme="twitter" leftIcon={<FaTwitter />}>
-            <OAuthButton></OAuthButton>
-          </Button>
-        </HStack>
+        {user ? (
+          <HStack>
+            <OAuthButton />
+          </HStack>
+        ) : (
+          <HStack>
+            { user }
+          </HStack>
+        )}
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
     </Box>
   )
 }

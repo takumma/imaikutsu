@@ -11,8 +11,6 @@ import getGraph from "../utils/getGraph";
 
 const UserPage = () => {
   const { query, isReady } = useRouter()
-
-  if (!isReady) return 'loading'
   const user = query.user
 
   const { data, error } = useSWR(`${user}`, getGraph, {
@@ -20,12 +18,13 @@ const UserPage = () => {
     revalidateOnReconnect: false
   })
 
+
   return (
     <Box bg='#FFDE59'>
       <div className={styles.container}>
         {error ? (
           <Error msg={`An error has occurred.${error}`}></Error>
-        ) : !data ? (
+        ) : (!data || !isReady) ? (
           <Loading />
         ) : (
           <Graph data={data}/>
