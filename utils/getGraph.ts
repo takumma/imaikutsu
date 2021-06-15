@@ -4,8 +4,6 @@ const graphCollection = firebase.firestore().collection('graphs')
 
 const getGraph = async (user: string) => {
 
-  console.log(user)
-
   return await graphCollection.where("screen_name", "==", `${user}`).limit(1).get().then((snapshot) => {
     let result = []
     snapshot.forEach((doc) => {
