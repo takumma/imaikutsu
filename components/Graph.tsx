@@ -47,12 +47,13 @@ const Graph = (props: {data: any[]}) => {
         <Tooltip />
         <Line
           type="monotone" dataKey="value"
+          name="メンタル値"
           stroke="#000" fill="#000" strokeWidth={5}
           dot={false} activeDot={{ fill: 'black', strokeWidth: 2, r: 6 }}
         />
         <Brush
           stroke="#000"
-          startIndex={5}
+          startIndex={props.data.length - 14}
         />
       </LineChart>
       </ResponsiveContainer>
