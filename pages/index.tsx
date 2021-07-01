@@ -12,8 +12,6 @@ export default function Home() {
   const [user, setUser] = useState(null)
   const [name, setName] = useState("")
 
-  console.log(user)
-
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {

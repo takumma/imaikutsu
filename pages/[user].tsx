@@ -20,7 +20,7 @@ const UserPage = () => {
 
 
   return (
-    <Box bg='#FFDE59'>
+    <Box w={["100%", "75%", "75%", "50%"]}>
       <div className={styles.container}>
         {error ? (
           <Error msg={`An error has occurred.${error}`}></Error>
