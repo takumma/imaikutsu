@@ -1,34 +1,12 @@
 import { Box } from "@chakra-ui/react"
 import { Line, LineChart, Tooltip, XAxis, YAxis, Brush, ResponsiveContainer } from "recharts"
-import dynamic from 'next/dynamic'
-const Chart = dynamic(import("react-apexcharts"), { ssr: false })
 
 const Graph = (props: {data: any[]}) => {
-  const mentalValues = props.data.map((v) => v["value"])
-  const timeStamps: string[] = props.data.map((v) => {
-    const timeStamp = v["time_stamp"].split('-')
-    return timeStamp[1] + '/' + timeStamp[2]
-  })
-  const series = [{
-    name: 'メンタル値',
-    data: mentalValues
-  }]
-
-  const options: ApexCharts.ApexOptions = {
-    chart: {
-      id: 'mentalValues',
-      type: 'area',
-      toolbar: {
-        show: false,
-      }
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    xaxis: {
-      categories: timeStamps
-    },
-  }
+  // const mentalValues = props.data.map((v) => v["value"])
+  // const timeStamps: string[] = props.data.map((v) => {
+  //   const timeStamp = v["time_stamp"].split('-')
+  //   return timeStamp[1] + '/' + timeStamp[2]
+  // })
 
   return (
     <Box width="100%">
@@ -57,7 +35,6 @@ const Graph = (props: {data: any[]}) => {
         />
       </LineChart>
       </ResponsiveContainer>
-      {typeof window ? <Chart options={options} series={series} /> : ""}
     </Box>
   )
 }

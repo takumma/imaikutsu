@@ -6,7 +6,7 @@ import React from 'react'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
-      <Box bg='#FFDE59'>
+      <Box>
         <Component {...pageProps} />
       </Box>
     </ChakraProvider>
