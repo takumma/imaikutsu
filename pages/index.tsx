@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import OAuthButton from '../components/OAuthButton'
+import Loading from '../components/Loading'
 import { Box, Button, HStack } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
@@ -9,24 +10,29 @@ import { useRouter } from 'next/router'
 export default function Home() {
 
   const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [name, setName] = useState("")
+  const [loading, setLoading] = useState<boolean>(true)
+  const [name, setName] = useState<string>("")
+
+  const getscreenName = async (user: firebase.User) => {
+    await firebase.firestore()
+      .collection('users')
+      .doc(`${user.uid}`)
+      .get()
+      .then((doc) => {
+        const data = doc.data()
+        setName(data.screenName)
+      })
+      .catch(() => {});
+  }
 
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        setUser(user)
-        await firebase.firestore()
-          .collection('users')
-          .doc(`${user.uid}`)
-          .get()
-          .then((doc) => {
-            const data = doc.data()
-            setName(data.screenName)
-          })
+        await getscreenName(user)
       } else {
-        setUser(null)
+        setName("");
       }
+      setLoading(false)
     })
   }, []);
 
@@ -44,7 +50,9 @@ export default function Home() {
           いまいくつ？
         </h1>
         <Box m={[10, 10]} />
-        {user ? (
+        {loading ? (
+          <Loading />
+        ) : name ? (
           <HStack>
             <Button onClick={() => router.push(`/${name}`)}>
               to user page
