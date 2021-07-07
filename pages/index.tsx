@@ -1,43 +1,71 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import OAuthButton from '../components/OAuthButton'
-import { Box, HStack,Button } from "@chakra-ui/react"
-import { FaTwitter } from 'react-icons/fa';
+import Loading from '../components/Loading'
+import { Box, Button, HStack } from "@chakra-ui/react"
+import firebase from '../utils/firebase'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
+
+  const router = useRouter()
+  const [loading, setLoading] = useState<boolean>(true)
+  const [name, setName] = useState<string>("")
+
+  const getscreenName = async (user: firebase.User): Promise<string> => {
+    return await firebase.firestore()
+      .collection('users')
+      .doc(`${user.uid}`)
+      .get()
+      .then((doc) => {
+        const data = doc.data()
+        return data.screenName
+      })
+      .catch(() => "");
+  }
+
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        const name = await getscreenName(user)
+        setName(name);
+      } else {
+        setName("");
+      }
+      setLoading(false)
+    })
+  }, []);
+
   return (
-    <Box bg='#FFDE59'>
-    <div className={styles.container}>
+    <Box className={styles.container}>
       <Head>
         <title>いまいくつ?</title>
       </Head>
       
       <main className={styles.main}>
         <p className={styles.description}>
-          あなたのきもちをすうじておしえて
+          
         </p>
         <h1 className={styles.title}>
-          いまいくつ？
+          あなたの"気持ち"を、<br />
+          "数字"でおしえて
         </h1>
         <Box m={[10, 10]} />
-        <HStack>
-          <Button colorScheme="twitter" leftIcon={<FaTwitter />}>
-            <OAuthButton></OAuthButton>
-          </Button>
-        </HStack>
+        {loading ? (
+          <Loading />
+        ) : name ? (
+          <HStack>
+            <Button onClick={() => router.push(`/${name}`)}>
+              to user page
+            </Button>
+          </HStack>
+        ) : (
+          <HStack>
+            <OAuthButton />
+          </HStack>
+        )}
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
     </Box>
   )
 }

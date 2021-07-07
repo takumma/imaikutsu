@@ -105,13 +105,3 @@ const getMentalValueFromName = (name: string | null): number | null => {
     else return doubleDigit
   }
 }
-
-
-// const lookupRequest = (users: User[]) => {
-//   const MaxUsersNum = 99;
-//   const results = []
-//   for (let i = 0; i < users.length; i += MaxUsersNum) {
-//     const params = users.slice(i, i + MaxUsersNum).map((user) => user.screenName)
-//     results.push(params);
-//   }
-// }

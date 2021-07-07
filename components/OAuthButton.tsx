@@ -1,8 +1,23 @@
 import React from 'react'
 import firebase from '../utils/firebase'
 import { User } from '../types';
+import { Button } from '@chakra-ui/button';
+import { FaTwitter } from 'react-icons/fa';
+import { useToast } from '@chakra-ui/react';
+
+type Status = "info" | "warning" | "success" | "error";
 
 const OAuthButton = () => {
+  const toast = useToast();
+
+  const showToast = (title: string = "", status: Status = "info") => {
+    toast({
+      title: title,
+      status: status,
+      duration: 5000,
+      isClosable: true,
+    })
+  }
 
   const signInWithTwitter = async () => {
     try {
@@ -17,19 +32,23 @@ const OAuthButton = () => {
         const firestore = firebase.firestore();
         const ref = firestore.collection('users').doc(resp.user.uid)
         await ref.set({ ...userData })
-        console.log('seccess')
-      } else {
-        throw Error('Error!')
+        showToast("Login was Succeeded!", "success");
       }
     } catch (err) {
-      console.error(err);
+      showToast("Login was Failed...", "error");
     }
   }
 
   return (
-    <button onClick={() => signInWithTwitter()}>
+    <Button
+      onClick={() => {
+        signInWithTwitter()
+      }}
+      colorScheme="twitter"
+      leftIcon={<FaTwitter />}
+    >
       Twitterでログイン
-    </button>
+    </Button>
   )
 }
 
