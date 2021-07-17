@@ -1,8 +1,7 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import OAuthButton from '../components/OAuthButton'
 import Loading from '../components/Loading'
-import { Box, Button, HStack } from "@chakra-ui/react"
+import { Box, Button, Container, Heading, HStack, Stack } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -38,26 +37,35 @@ export default function Home() {
   }, []);
 
   return (
-    <Box className={styles.container}>
+    <Container maxW={'5xl'}>
       <Head>
         <title>いまいくつ?</title>
       </Head>
-      
-      <main className={styles.main}>
-        <p className={styles.description}>
-          
-        </p>
-        <h1 className={styles.title}>
+      <Stack
+        textAlign={'center'}
+        align={'center'}
+        spacing={{ base: 8, md: 10 }}
+        py={{ base: 20, md: 28 }}
+      >
+        <Heading
+          fontWeight={600}
+          fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
+          lineHeight={'110%'}
+        >
           あなたの"気持ち"を、<br />
           "数字"でおしえて
-        </h1>
-        <Box m={[10, 10]} />
+        </Heading>
+        
         {loading ? (
           <Loading />
         ) : name ? (
           <HStack>
-            <Button onClick={() => router.push(`/${name}`)}>
-              to user page
+            <Button
+              rounded={'full'}
+              colorScheme={'yellow'}
+              onClick={() => router.push(`/${name}`)}
+            >
+              あなたのグラフをみる
             </Button>
           </HStack>
         ) : (
@@ -65,7 +73,7 @@ export default function Home() {
             <OAuthButton />
           </HStack>
         )}
-      </main>
-    </Box>
+      </Stack>
+    </Container>
   )
 }

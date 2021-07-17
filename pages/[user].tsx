@@ -1,5 +1,4 @@
-import { Box, Button } from "@chakra-ui/react"
-import styles from '../styles/Home.module.css'
+import { Box, Stack } from "@chakra-ui/react"
 import Graph from '../components/Graph'
 import Loading from '../components/Loading'
 import Error from '../components/Error'
@@ -7,6 +6,7 @@ import { useRouter } from 'next/router';
 
 import useSWR from "swr";
 import getGraph from "../utils/getGraph";
+import { Container } from "next/app";
 
 
 const UserPage = () => {
@@ -20,17 +20,22 @@ const UserPage = () => {
 
 
   return (
-    <Box w={["100%", "75%", "75%", "50%"]}>
-      <div className={styles.container}>
+    <Container w={'5x1'}>
+      <Stack
+        textAlign={'center'}
+        align={'center'}
+        spacing={{ base: 8, md: 10 }}
+        py={{ base: 20, md: 28 }}
+      >
         {error ? (
-          <Error msg={`An error has occurred.${error}`}></Error>
-        ) : (!data || !isReady) ? (
-          <Loading />
-        ) : (
-          <Graph data={data}/>
+            <Error msg={`An error has occurred.${error}`}></Error>
+          ) : (!data || !isReady) ? (
+            <Loading />
+          ) : (
+            <Graph data={data}/>
         )}
-      </div>
-    </Box>
+      </Stack>
+    </Container>
   )
 }
 
