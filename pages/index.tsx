@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import OAuthButton from '../components/OAuthButton'
 import Loading from '../components/Loading'
-import { Button, Container, Heading, HStack, Stack } from "@chakra-ui/react"
+import { Button, Container, Heading, HStack, Stack, Text } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <Container maxW={'5xl'}>
       <Head>
-        <title>いまいくつ?</title>
+        <title>imaikutsu?</title>
       </Head>
       <Stack
         textAlign={'center'}
@@ -55,7 +55,10 @@ export default function Home() {
           あなたの"気持ち"を、<br />
           "数字"でおしえて
         </Heading>
-        
+        <Text color={'gray.500'} maxW={'3xl'}>
+          毎日使ってるTwitterで、自分のメンタルを記録しましょう。Twitter認証をして、あとはTwitterのユーザー名にメンタル値を付けるだけです。
+          ふとした時に名前を変えれば、それだけであなたのメンタルが記録されていきます。
+        </Text>
         {loading ? (
           <Loading />
         ) : name ? (

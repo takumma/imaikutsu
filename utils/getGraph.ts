@@ -7,8 +7,12 @@ const getGraph = async (user: string) => {
   return await graphCollection.where("screen_name", "==", `${user}`).limit(1).get().then((snapshot) => {
     let result = []
     snapshot.forEach((doc) => {
-      const mentalValues = doc.data().mentalValues
-      if(mentalValues) result = mentalValues
+      const mentalValues: any[] | null = doc.data().mentalValues
+      if(mentalValues) result = mentalValues.map((mentalValue) => {
+        const timeStamp = mentalValue['time_stamp'].split('-');
+        mentalValue['time_stamp'] = `${timeStamp[1]}/${timeStamp[2]}`
+        return mentalValue
+      })
     })
     return result
   })

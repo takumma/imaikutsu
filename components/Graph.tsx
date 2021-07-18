@@ -12,15 +12,9 @@ const Graph = (props: {data: any[]}) => {
     <Box width="100%">
       <ResponsiveContainer width="95%" height={400} >
       <LineChart
-        margin={{
-          top: 50,
-          right: 5,
-          left: 5,
-          bottom: 20,
-        }}
         data={props.data}
       >
-        <XAxis dataKey="time_stamp" />
+        <XAxis dataKey="time_stamp" interval="preserveStartEnd" />
         <YAxis type="number" domain={[0, 10]} />
         <Tooltip />
         <Line
