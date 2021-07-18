@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import OAuthButton from '../components/OAuthButton'
 import Loading from '../components/Loading'
-import { Box, Button, Container, Heading, HStack, Stack } from "@chakra-ui/react"
+import { Button, Container, Heading, HStack, Stack } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'

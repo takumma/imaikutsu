@@ -1,4 +1,4 @@
-import { Box, Stack } from "@chakra-ui/react"
+import { Stack, Container } from "@chakra-ui/react"
 import Graph from '../components/Graph'
 import Loading from '../components/Loading'
 import Error from '../components/Error'
@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 
 import useSWR from "swr";
 import getGraph from "../utils/getGraph";
-import { Container } from "next/app";
 
 
 const UserPage = () => {
