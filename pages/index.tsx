@@ -1,10 +1,11 @@
 import Head from 'next/head'
 import OAuthButton from '../components/OAuthButton'
 import Loading from '../components/Loading'
-import { Button, Container, Heading, HStack, Stack, Text } from "@chakra-ui/react"
+import { Button, Center, Container, Heading, HStack, Stack, Text } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import FeaturesBlock from '../components/FeaturesBlock'
 
 export default function Home() {
 
@@ -55,27 +56,40 @@ export default function Home() {
           あなたの"気持ち"を、<br />
           "数字"でおしえて
         </Heading>
-        <Text color={'gray.500'} maxW={'3xl'}>
+        <Text color={'gray.600'} maxW={'3xl'}>
           毎日使ってるTwitterで、自分のメンタルを記録しましょう。Twitter認証をして、あとはTwitterのユーザー名にメンタル値を付けるだけです。
           ふとした時に名前を変えれば、それだけであなたのメンタルが記録されていきます。
         </Text>
         {loading ? (
           <Loading />
         ) : name ? (
-          <HStack>
-            <Button
-              rounded={'full'}
-              colorScheme={'yellow'}
-              onClick={() => router.push(`/${name}`)}
-            >
-              あなたのグラフをみる
-            </Button>
-          </HStack>
+          <Stack align={'Center'}>
+            <HStack mb={2}>
+              <Button
+                rounded={'full'}
+                colorScheme={'yellow'}
+                p={6}
+                onClick={() => router.push(`/${name}`)}
+              >
+                グラフをみる
+              </Button>
+            </HStack>
+            <HStack>
+              <Button
+                variant={'link'}
+                colorScheme={'blue'}
+                onClick={() => {}}
+              >
+                Learn more
+              </Button>
+            </HStack>
+          </Stack>
         ) : (
           <HStack>
             <OAuthButton />
           </HStack>
         )}
+        <FeaturesBlock />
       </Stack>
     </Container>
   )

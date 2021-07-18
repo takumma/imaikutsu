@@ -3,26 +3,35 @@ import { Box, Stack, Flex, Text } from '@chakra-ui/react'
 interface FeatureProps {
   title: string;
   text: string;
-  number: number;
+  index: number;
 }
 
 const Feature = (props: FeatureProps) => {
   return (
-    <Stack>
+    <Stack
+      align={'start'}
+      textAlign={'start'}
+    >
       <Flex
-        w={16}
-        h={16}
+        w={14}
+        h={14}
         align={'center'}
         justify={'center'}
-        color={'white'}
+        color={'green.700'}
+        bg={'green.100'}
         rounded={'full'}
-        bg={'gray.100'}
         mb={1}
+        fontSize={[16, 16, 20]}
       >
-        {props.number}
+        {props.index + 1}
       </Flex>
-      <Text fontSize={4} fontWeight={600}>{props.title}</Text>
-      <Text color={'gray.800'}>{props.text}</Text>
+      <Text
+        fontSize={{ base: 'xl', sm: 'xl', md: 'xl' }}
+        fontWeight={600}
+      >
+        {props.title}
+      </Text>
+      <Text color={'gray.700'}>{props.text}</Text>
     </Stack>
   )
 }

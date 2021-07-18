@@ -2,7 +2,7 @@ import { AppProps } from 'next/app'
 import { Box, ChakraProvider, Container, Stack, useColorModeValue, Text } from '@chakra-ui/react'
 import React from 'react'
 import theme  from '../theme'
-import { SocialMediaLinks } from '../components/SocialMediaLinks'
+import SocialMediaLinks from '../components/SocialMediaLinks'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
