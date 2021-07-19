@@ -1,8 +1,9 @@
-import { Box, Stack, Flex, Text } from '@chakra-ui/react'
+import { Stack, Flex, Text, Image } from '@chakra-ui/react'
 
 interface FeatureProps {
   title: string;
   text: string;
+  image: string;
   index: number;
 }
 
@@ -33,6 +34,7 @@ const Feature = (props: FeatureProps) => {
       >
         {props.title}
       </Text>
+      <Image src={props.image} />
       <Text color={'gray.700'}>{props.text}</Text>
     </Stack>
   )
