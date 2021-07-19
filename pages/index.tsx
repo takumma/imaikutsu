@@ -6,6 +6,7 @@ import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import FeaturesBlock from '../components/FeaturesBlock'
+import Heroes from '../components/Heroes'
 
 export default function Home() {
 
@@ -48,18 +49,7 @@ export default function Home() {
         spacing={{ base: 8, md: 10 }}
         py={{ base: 20, md: 28 }}
       >
-        <Heading
-          fontWeight={600}
-          fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
-          lineHeight={'110%'}
-        >
-          あなたの"気持ち"を、<br />
-          "数字"でおしえて
-        </Heading>
-        <Text color={'gray.600'} maxW={'3xl'}>
-          毎日使ってるTwitterで、自分のメンタルを記録しましょう。Twitter認証をして、あとはTwitterのユーザー名にメンタル値を付けるだけです。
-          ふとした時に名前を変えれば、それだけであなたのメンタルが記録されていきます。
-        </Text>
+        <Heroes />
         {loading ? (
           <Loading />
         ) : name ? (
@@ -67,14 +57,22 @@ export default function Home() {
             <HStack mb={2}>
               <Button
                 rounded={'full'}
-                colorScheme={'yellow'}
+                bg={'green.400'}
                 p={6}
+                color={'white'}
+                boxShadow={'0 5px 20px 0px rgb(72 187 120 / 43%)'}
+                _hover={{
+                  bg: 'green.500',
+                }}
+                _focus={{
+                  bg: 'green.500',
+                }}
                 onClick={() => router.push(`/${name}`)}
               >
                 グラフをみる
               </Button>
             </HStack>
-            <HStack>
+            {/* <HStack>
               <Button
                 variant={'link'}
                 colorScheme={'blue'}
@@ -82,7 +80,7 @@ export default function Home() {
               >
                 Learn more
               </Button>
-            </HStack>
+            </HStack> */}
           </Stack>
         ) : (
           <HStack>

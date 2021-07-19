@@ -9,19 +9,21 @@ interface FeatureProps {
 const Feature = (props: FeatureProps) => {
   return (
     <Stack
-      align={'start'}
-      textAlign={'start'}
+      align={'center'}
+      textAlign={'center'}
     >
       <Flex
-        w={14}
-        h={14}
+        w={12}
+        h={12}
+        mb={1}
         align={'center'}
         justify={'center'}
-        color={'green.700'}
-        bg={'green.100'}
+        color={'white'}
+        bg={'green.400'}
         rounded={'full'}
-        mb={1}
-        fontSize={[16, 16, 20]}
+        boxShadow={'0 5px 20px 0px rgb(72 187 120 / 43%)'}
+        fontWeight={'600'}
+        fontSize={[14, 14, 18]}
       >
         {props.index + 1}
       </Flex>
