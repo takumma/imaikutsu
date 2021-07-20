@@ -1,4 +1,4 @@
-import { Stack, Container, Text, FormControl, FormLabel, Switch } from "@chakra-ui/react"
+import { Stack, Container, Text, Button, useToast } from "@chakra-ui/react"
 import Graph from '../components/Graph'
 import Loading from '../components/Loading'
 import Error from '../components/Error'
@@ -6,15 +6,39 @@ import { useRouter } from 'next/router';
 
 import useSWR from "swr";
 import getGraph from "../utils/getGraph";
+import firebase from '../utils/firebase'
+
+type Status = "info" | "warning" | "success" | "error";
 
 const UserPage = () => {
   const { query, isReady } = useRouter()
   const user = query.user
 
+  const toast = useToast();
+
+  const showToast = (title: string = "", status: Status = "info") => {
+    toast({
+      title: title,
+      status: status,
+      duration: 5000,
+      isClosable: true,
+    })
+  }
+
   const { data, error } = useSWR(`${user}`, getGraph, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
+
+  const logout = () => {
+    firebase.auth().signOut().then(() => {
+      showToast('Logout was Succeeded.', 'success')
+    })
+    .catch((err) => {
+      console.error(err);
+      showToast('Logout was Failed...', 'error')
+    })
+  }
 
   return (
     <Container w={'5x1'}>
@@ -38,7 +62,6 @@ const UserPage = () => {
                 {user}さんのグラフ
               </Text>
               <Graph data={data}/>
-              <Container mb={48}></Container>
               {/* <Text
                 fontSize={{ base: 'xl', sm: 'xl', md: 'xl' }}
                 fontWeight={600}
@@ -53,6 +76,15 @@ const UserPage = () => {
                 </FormLabel>
                 <Switch />
               </FormControl> */}
+
+              <Button
+                mt={36}
+                variant={'link'}
+                colorScheme={'red'}
+                onClick={() => logout()}
+              >
+                ログアウト
+              </Button>
             </Container>
         )}
       </Stack>
