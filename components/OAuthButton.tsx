@@ -35,6 +35,7 @@ const OAuthButton = () => {
         showToast("Login was Succeeded!", "success");
       }
     } catch (err) {
+      console.log(err);
       showToast("Login was Failed...", "error");
     }
   }
