@@ -34,7 +34,7 @@ const Feature = (props: FeatureProps) => {
       >
         {props.title}
       </Text>
-      <Image src={props.image} />
+      <Image src={props.image} width={{base: '70%', md: '100%'}} />
       <Text color={'gray.700'}>{props.text}</Text>
     </Stack>
   )

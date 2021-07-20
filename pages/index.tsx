@@ -31,8 +31,6 @@ export default function Home() {
       if (user) {
         const name = await getscreenName(user)
         setName(name);
-      } else {
-        setName("");
       }
       setLoading(false)
     })

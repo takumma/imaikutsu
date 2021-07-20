@@ -27,7 +27,7 @@ const FeaturesBlock = () => {
         spacing={10}
       >
         {STEPS.map((step, index) => (
-          <Feature {...step} index={index} />
+          <Feature {...step} index={index} key={index} />
         ))}
       </SimpleGrid>
     </Box>
