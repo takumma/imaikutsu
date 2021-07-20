@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import OAuthButton from '../components/OAuthButton'
 import Loading from '../components/Loading'
-import { Button, Center, Container, Heading, HStack, Stack, Text } from "@chakra-ui/react"
+import { Button, Container, HStack, Stack } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import FeaturesBlock from '../components/FeaturesBlock'
 import Heroes from '../components/Heroes'
+import OwnButton from '../components/OwnButton'
 
 export default function Home() {
 
@@ -53,22 +54,7 @@ export default function Home() {
         ) : name ? (
           <Stack align={'Center'}>
             <HStack mb={2}>
-              <Button
-                rounded={'full'}
-                bg={'green.400'}
-                p={6}
-                color={'white'}
-                boxShadow={'0 5px 20px 0px rgb(72 187 120 / 43%)'}
-                _hover={{
-                  bg: 'green.500',
-                }}
-                _focus={{
-                  bg: 'green.500',
-                }}
-                onClick={() => router.push(`/${name}`)}
-              >
-                グラフをみる
-              </Button>
+              <OwnButton label={'グラフをみる'} onClick={() => router.push(`/${name}`)} />
             </HStack>
             {/* <HStack>
               <Button
