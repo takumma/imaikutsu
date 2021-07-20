@@ -1,5 +1,5 @@
 import { AppProps } from 'next/app'
-import { Box, ChakraProvider, Container, Stack, useColorModeValue, Text, Flex, Image } from '@chakra-ui/react'
+import { Box, ChakraProvider, Container, Stack, useColorModeValue, Text, Flex, Image, Link } from '@chakra-ui/react'
 import React from 'react'
 import theme  from '../theme'
 import SocialMediaLinks from '../components/SocialMediaLinks'
@@ -17,7 +17,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           py={{ base: 4 }}
           px={{ base: 2 }}
         >
-          <Image src={'images/logo.png'}  alt={'logo'} width={'200px'} />
+          <Link onClick={() => router.push('/')}>
+            <Image src={'images/logo.png'}  alt={'logo'} width={'200px'} />
+          </Link>
         </Flex>
       </Box>
       <Component {...pageProps} />
