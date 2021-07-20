@@ -10,27 +10,22 @@ const Graph = (props: {data: any[]}) => {
 
   return (
     <Box width="100%">
-      <ResponsiveContainer width="95%" height={400} >
+      <ResponsiveContainer height={400} >
       <LineChart
-        margin={{
-          top: 50,
-          right: 5,
-          left: 5,
-          bottom: 20,
-        }}
         data={props.data}
       >
-        <XAxis dataKey="time_stamp" />
+        <XAxis dataKey="time_stamp" interval="preserveStartEnd" />
         <YAxis type="number" domain={[0, 10]} />
-        <Tooltip />
+        <Tooltip itemStyle={{color: "#000"}}/>
         <Line
           type="monotone" dataKey="value"
           name="メンタル値"
-          stroke="#000" fill="#000" strokeWidth={5}
-          dot={false} activeDot={{ fill: 'black', strokeWidth: 2, r: 6 }}
+          stroke="#48BB78" fill="#48BB78" strokeWidth={5}
+          dot={false} activeDot={{ fill: "#48BB78", strokeWidth: 2, r: 6 }}
         />
         <Brush
-          stroke="#000"
+          height={30}
+          stroke="#48BB78"
           startIndex={props.data.length - 14}
         />
       </LineChart>

@@ -1,11 +1,13 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import OAuthButton from '../components/OAuthButton'
 import Loading from '../components/Loading'
-import { Box, Button, HStack } from "@chakra-ui/react"
+import { Button, Container, HStack, Stack } from "@chakra-ui/react"
 import firebase from '../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import FeaturesBlock from '../components/FeaturesBlock'
+import Heroes from '../components/Heroes'
+import OwnButton from '../components/OwnButton'
 
 export default function Home() {
 
@@ -30,42 +32,47 @@ export default function Home() {
       if (user) {
         const name = await getscreenName(user)
         setName(name);
-      } else {
-        setName("");
       }
       setLoading(false)
     })
   }, []);
 
   return (
-    <Box className={styles.container}>
+    <Container maxW={'5xl'}>
       <Head>
-        <title>いまいくつ?</title>
+        <title>imaikutsu?</title>
       </Head>
-      
-      <main className={styles.main}>
-        <p className={styles.description}>
-          
-        </p>
-        <h1 className={styles.title}>
-          あなたの"気持ち"を、<br />
-          "数字"でおしえて
-        </h1>
-        <Box m={[10, 10]} />
+      <Stack
+        textAlign={'center'}
+        align={'center'}
+        spacing={{ base: 8, md: 10 }}
+        py={{ base: 20, md: 28 }}
+      >
+        <Heroes />
         {loading ? (
           <Loading />
         ) : name ? (
-          <HStack>
-            <Button onClick={() => router.push(`/${name}`)}>
-              to user page
-            </Button>
-          </HStack>
+          <Stack align={'Center'}>
+            <HStack mb={2}>
+              <OwnButton label={'グラフをみる'} onClick={() => router.push(`/${name}`)} />
+            </HStack>
+            {/* <HStack>
+              <Button
+                variant={'link'}
+                colorScheme={'blue'}
+                onClick={() => {}}
+              >
+                Learn more
+              </Button>
+            </HStack> */}
+          </Stack>
         ) : (
           <HStack>
             <OAuthButton />
           </HStack>
         )}
-      </main>
-    </Box>
+        <FeaturesBlock />
+      </Stack>
+    </Container>
   )
 }
