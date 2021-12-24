@@ -1,10 +1,14 @@
-import firebase from './firebase'
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { firestore } from './firebase'
 
-const graphCollection = firebase.firestore().collection('graphs')
+const graphCollection = collection(firestore, 'graphs')
+
 
 const getGraph = async (user: string) => {
 
-  return await graphCollection.where("screen_name", "==", `${user}`).limit(1).get().then((snapshot) => {
+  const q = query(graphCollection, where("screen_name", "==", `${user}`))
+
+  return await getDocs(q).then((snapshot) => {
     let result = []
     snapshot.forEach((doc) => {
       const mentalValues: any[] | null = doc.data().mentalValues
