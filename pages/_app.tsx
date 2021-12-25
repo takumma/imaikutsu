@@ -6,7 +6,7 @@ import SocialMediaLinks from '../components/SocialMediaLinks'
 import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <ChakraProvider theme={theme}>

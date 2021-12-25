@@ -22,20 +22,21 @@ export default function Home() {
       .get()
       .then((doc) => {
         const data = doc.data()
+        
         return data.screenName
       })
-      .catch(() => "");
+      .catch(() => "")
   }
 
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         const name = await getscreenName(user)
-        setName(name);
+        setName(name)
       }
       setLoading(false)
     })
-  }, []);
+  }, [])
 
   return (
     <Container maxW={'5xl'}>

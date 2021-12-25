@@ -1,14 +1,14 @@
 import React from 'react'
-import firebase from '../utils/firebase'
-import { User } from '../types';
-import { Button } from '@chakra-ui/button';
-import { FaTwitter } from 'react-icons/fa';
-import { useToast } from '@chakra-ui/react';
+import { auth } from '../utils/firebase'
+import { User } from '../types'
+import { Button } from '@chakra-ui/button'
+import { FaTwitter } from 'react-icons/fa'
+import { useToast } from '@chakra-ui/react'
 
 type Status = "info" | "warning" | "success" | "error";
 
 const OAuthButton = () => {
-  const toast = useToast();
+  const toast = useToast()
 
   const showToast = (title: string = "", status: Status = "info") => {
     toast({
@@ -29,14 +29,14 @@ const OAuthButton = () => {
           screenName: resp.additionalUserInfo.username,
           isActive: true,
         }
-        const firestore = firebase.firestore();
+        const firestore = firebase.firestore()
         const ref = firestore.collection('users').doc(resp.user.uid)
         await ref.set({ ...userData })
-        showToast("Login was Succeeded!", "success");
+        showToast("Login was Succeeded!", "success")
       }
     } catch (err) {
-      console.log(err);
-      showToast("Login was Failed...", "error");
+      console.log(err)
+      showToast("Login was Failed...", "error")
     }
   }
 
@@ -53,4 +53,4 @@ const OAuthButton = () => {
   )
 }
 
-export default OAuthButton;
+export default OAuthButton

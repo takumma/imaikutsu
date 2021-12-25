@@ -2,10 +2,10 @@ import { Stack, Container, Text, Button, useToast } from "@chakra-ui/react"
 import Graph from '../components/Graph'
 import Loading from '../components/Loading'
 import Error from '../components/Error'
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
-import useSWR from "swr";
-import getGraph from "../utils/getGraph";
+import useSWR from "swr"
+import getGraph from "../utils/getGraph"
 import firebase from '../utils/firebase'
 
 type Status = "info" | "warning" | "success" | "error";
@@ -14,7 +14,7 @@ const UserPage = () => {
   const { query, isReady } = useRouter()
   const user = query.user
 
-  const toast = useToast();
+  const toast = useToast()
 
   const showToast = (title: string = "", status: Status = "info") => {
     toast({
@@ -35,7 +35,7 @@ const UserPage = () => {
       showToast('Logout was Succeeded.', 'success')
     })
     .catch((err) => {
-      console.error(err);
+      console.error(err)
       showToast('Logout was Failed...', 'error')
     })
   }
