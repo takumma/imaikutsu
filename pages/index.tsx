@@ -9,39 +9,55 @@ import FeaturesBlock from "../components/FeaturesBlock";
 import Heroes from "../components/Heroes";
 import OwnButton from "../components/OwnButton";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, FirestoreDataConverter, getDoc } from "firebase/firestore";
+import { UserData } from "../types";
 
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
 
+  function assertUserData(data: any): asserts data is UserData {
+    const d = data as Partial<UserData>; // 補完のためキャスト
+    if (
+      !(
+        typeof d?.uid === "string" &&
+        typeof d?.screenName === "string" &&
+        typeof d?.isActive === "boolean"
+      )
+    ) {
+      throw new Error("data is not UserData type");
+    }
+  }
+
+  const userDataConverter: FirestoreDataConverter<UserData> = {
+    toFirestore: (user) => user,
+    fromFirestore: (snapshot, options) => {
+      const data = snapshot.data(options);
+      assertUserData(data);
+      return data;
+    },
+  };
+
   const getscreenName = async (user: User): Promise<string> => {
-    return getDoc(doc(firestore, "users", `${user.uid}`))
+    return getDoc(
+      doc(firestore, "users", `${user.uid}`).withConverter(userDataConverter)
+    )
       .then((doc) => {
         const data = doc.data();
+        if (!data) return "";
         return data.screenName;
       })
       .catch(() => "");
-    // return await firebase
-    //   .firestore()
-    //   .collection("users")
-    //   .doc(`${user.uid}`)
-    //   .get()
-    //   .then((doc) => {
-    //     const data = doc.data();
-
-    //     return data.screenName;
-    //   })
-    //   .catch(() => "");
   };
 
   useEffect(() => {
-    return onAuthStateChanged(auth, async (user) => {
+    return onAuthStateChanged(auth, (user) => {
       if (user) {
         // sign in
-        const name = await getscreenName(user);
-        setName(name);
+        getscreenName(user).then((name) => {
+          setName(name);
+        });
       } else {
         // sign out
       }

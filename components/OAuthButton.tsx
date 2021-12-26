@@ -5,7 +5,7 @@ import {
   signInWithPopup,
   TwitterAuthProvider,
 } from "firebase/auth";
-import { User } from "../types";
+import { UserData } from "../types";
 import { Button } from "@chakra-ui/button";
 import { FaTwitter } from "react-icons/fa";
 import { useToast } from "@chakra-ui/react";
@@ -16,7 +16,7 @@ type Status = "info" | "warning" | "success" | "error";
 const OAuthButton = () => {
   const toast = useToast();
 
-  const showToast = (title: string = "", status: Status = "info") => {
+  const showToast = (title = "", status: Status = "info") => {
     toast({
       title: title,
       status: status,
@@ -25,18 +25,21 @@ const OAuthButton = () => {
     });
   };
 
-  const signInWithTwitter = async () => {
+  const signInWithTwitter = () => {
     if (location) {
       const provider = new TwitterAuthProvider();
       signInWithPopup(auth, provider)
         .then(async (result) => {
           const additionalUserInfo = getAdditionalUserInfo(result);
-          const user: User = {
+          if (additionalUserInfo == null) return;
+          if (!additionalUserInfo.username) return;
+
+          const user: UserData = {
             uid: result.user.uid,
             screenName: additionalUserInfo.username,
             isActive: true,
           };
-          setDoc(doc(firestore, "users", result.user.uid), { ...user });
+          await setDoc(doc(firestore, "users", result.user.uid), { ...user });
           showToast("Login was Succeeded!", "success");
         })
         .catch((err) => {

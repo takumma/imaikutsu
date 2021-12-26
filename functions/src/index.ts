@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { User } from "../../types";
+import { UserData } from "../../types";
 import Twitter from "twitter";
 
 // setting about dayjs and timezone
@@ -40,13 +40,13 @@ exports.scheduledFunction = functions
   });
 
 // get active user (isActive == true) from firestore
-const getActiveUsers = async (): Promise<User[]> => {
+const getActiveUsers = async (): Promise<UserData[]> => {
   return firestore
     .collection("users")
     .where("isActive", "==", true)
     .get()
     .then((querySnapShot) => {
-      const users: User[] = [];
+      const users: UserData[] = [];
       querySnapShot.forEach((doc) => {
         const data = doc.data();
         users.push({
@@ -59,7 +59,7 @@ const getActiveUsers = async (): Promise<User[]> => {
     });
 };
 
-const showRequest = (users: User[], timeStamp: string) => {
+const showRequest = (users: UserData[], timeStamp: string) => {
   const MaxParallelNum = 5;
 
   const client = new Twitter({

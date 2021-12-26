@@ -17,7 +17,7 @@ const UserPage = () => {
 
   const toast = useToast();
 
-  const showToast = (title: string = "", status: Status = "info") => {
+  const showToast = (title = "", status: Status = "info") => {
     toast({
       title: title,
       status: status,
