@@ -2,7 +2,7 @@ import Head from "next/head";
 import OAuthButton from "../components/OAuthButton";
 import Loading from "../components/Loading";
 import { Container, HStack, Stack } from "@chakra-ui/react";
-import firebase, { auth, firestore } from "../utils/firebase";
+import { auth, firestore } from "../utils/firebase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import FeaturesBlock from "../components/FeaturesBlock";
