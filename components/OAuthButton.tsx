@@ -1,11 +1,15 @@
 import React from "react";
-import { auth } from "../utils/firebase";
-import firebase from "../utils/firebase";
-import { signInWithPopup, TwitterAuthProvider } from "firebase/auth";
+import { auth, firestore } from "../utils/firebase";
+import {
+  getAdditionalUserInfo,
+  signInWithPopup,
+  TwitterAuthProvider,
+} from "firebase/auth";
 import { User } from "../types";
 import { Button } from "@chakra-ui/button";
 import { FaTwitter } from "react-icons/fa";
 import { useToast } from "@chakra-ui/react";
+import { doc, setDoc } from "firebase/firestore";
 
 type Status = "info" | "warning" | "success" | "error";
 
@@ -22,35 +26,23 @@ const OAuthButton = () => {
   };
 
   const signInWithTwitter = async () => {
-    try {
-      if (location) {
-        const provider = new TwitterAuthProvider();
-        signInWithPopup(auth, provider).then((result) => {
-          console.log(result);
-          // const user: User = {
-          //   uid: result.user.uid,
-          //   id: result.user.additionalUserInfo.profile['id'],
-          //   screenName: result.user.providerData[0].displayName,
-          //   isActive: true,
-          // }
+    if (location) {
+      const provider = new TwitterAuthProvider();
+      signInWithPopup(auth, provider)
+        .then(async (result) => {
+          const additionalUserInfo = getAdditionalUserInfo(result);
+          const user: User = {
+            uid: result.user.uid,
+            screenName: additionalUserInfo.username,
+            isActive: true,
+          };
+          setDoc(doc(firestore, "users", result.user.uid), { ...user });
+          showToast("Login was Succeeded!", "success");
+        })
+        .catch((err) => {
+          console.log(err);
+          showToast("Login was Failed...", "error");
         });
-        const resp = await firebase
-          .auth()
-          .signInWithPopup(new firebase.auth.TwitterAuthProvider());
-        console.log(resp);
-        const userData: User = {
-          uid: resp.user.uid,
-          id: resp.additionalUserInfo.profile["id"],
-          screenName: resp.additionalUserInfo.username,
-          isActive: true,
-        };
-        const ref = firebase.firestore().collection("users").doc(resp.user.uid);
-        await ref.set({ ...userData });
-        showToast("Login was Succeeded!", "success");
-      }
-    } catch (err) {
-      console.log(err);
-      showToast("Login was Failed...", "error");
     }
   };
 

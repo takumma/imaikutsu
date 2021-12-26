@@ -6,7 +6,8 @@ import { useRouter } from "next/router";
 
 import useSWR from "swr";
 import getGraph from "../utils/getGraph";
-import firebase from "../utils/firebase";
+import { auth } from "../utils/firebase";
+import { signOut } from "firebase/auth";
 
 type Status = "info" | "warning" | "success" | "error";
 
@@ -31,9 +32,7 @@ const UserPage = () => {
   });
 
   const logout = () => {
-    firebase
-      .auth()
-      .signOut()
+    signOut(auth)
       .then(() => {
         showToast("Logout was Succeeded.", "success");
       })
@@ -49,7 +48,7 @@ const UserPage = () => {
         textAlign={"center"}
         align={"center"}
         spacing={{ base: 8, md: 10 }}
-        py={{ base: 20, md: 28 }}
+        py={{ base: 10, md: 14 }}
       >
         {error ? (
           <Error msg={`An error has occurred.${error}`}></Error>
@@ -64,6 +63,9 @@ const UserPage = () => {
             >
               {user}さんのグラフ
             </Text>
+            <Stack shouldWrapChildren={true}>
+              <Graph data={data} />
+            </Stack>
             <Graph data={data} />
             {/* <Text
                 fontSize={{ base: 'xl', sm: 'xl', md: 'xl' }}

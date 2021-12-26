@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { User } from "./types";
+import { User } from "../../types";
 import Twitter from "twitter";
 
 // setting about dayjs and timezone
@@ -51,8 +51,8 @@ const getActiveUsers = async (): Promise<User[]> => {
         const data = doc.data();
         users.push({
           uid: data.uid,
-          id: data.id,
           screenName: data.screenName,
+          isActive: true,
         });
       });
       return users;
