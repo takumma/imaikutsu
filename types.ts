@@ -5,11 +5,11 @@ export type UserData = {
 };
 
 export type MentalValue = {
-  timeStamp: string;
+  time_stamp: string;
   value: number;
 };
 
 export type GraphData = {
   mentalValues: MentalValue[];
-  screenName: string;
+  screen_name: string;
 };

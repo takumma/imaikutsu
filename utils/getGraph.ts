@@ -12,9 +12,9 @@ import { firestore } from "./firebase";
 function assertGraphData(data: DocumentData): asserts data is GraphData {
   const d = data as Partial<GraphData>;
   if (
-    !(typeof d?.mentalValues === "object" && typeof d?.screenName === "string")
+    !(typeof d?.mentalValues === "object" && typeof d?.screen_name === "string")
   ) {
-    throw new Error("data is not UserData type");
+    throw new Error("data is not GraphData type");
   }
 }
 
@@ -41,8 +41,8 @@ const getGraph = async (user: string): Promise<MentalValue[]> => {
         if (mentalValues)
           result = mentalValues.map((mentalValue) => {
             // ex: 2021-10-03 -> 10/03
-            const splitedTimeStamp = mentalValue.timeStamp.split("-");
-            mentalValue.timeStamp = `${splitedTimeStamp[1]}/${splitedTimeStamp[2]}`;
+            const splitedTimeStamp = mentalValue.time_stamp.split("-");
+            mentalValue.time_stamp = `${splitedTimeStamp[1]}/${splitedTimeStamp[2]}`;
             return mentalValue;
           });
       });
