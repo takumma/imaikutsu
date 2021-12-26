@@ -13,7 +13,7 @@ type Status = "info" | "warning" | "success" | "error";
 
 const UserPage = () => {
   const { query, isReady } = useRouter();
-  const user = query.user;
+  const user = Array.isArray(query.user) ? query.user[0] : query.user;
 
   const toast = useToast();
 

@@ -1,6 +1,10 @@
 import { Box } from "@chakra-ui/layout";
 
-const Error = (props) => {
+interface ErrorProps {
+  msg: string;
+}
+
+const Error = (props: ErrorProps) => {
   return <Box>{props.msg}</Box>;
 };
 
