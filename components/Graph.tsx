@@ -8,8 +8,9 @@ import {
   Brush,
   ResponsiveContainer,
 } from "recharts";
+import { MentalValue } from "../types";
 
-const Graph = (props: { data: any[] }) => (
+const Graph = (props: { data: MentalValue[] }) => (
   <Box width="100%">
     <ResponsiveContainer height={400}>
       <LineChart data={props.data}>

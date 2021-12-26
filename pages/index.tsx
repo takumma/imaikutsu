@@ -23,7 +23,7 @@ export default function Home() {
   const [name, setName] = useState<string>("");
 
   function assertUserData(data: DocumentData): asserts data is UserData {
-    const d = data as Partial<UserData>; // 補完のためキャスト
+    const d = data as Partial<UserData>;
     if (
       !(
         typeof d?.uid === "string" &&

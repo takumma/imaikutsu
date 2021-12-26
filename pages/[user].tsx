@@ -1,7 +1,6 @@
 import { Stack, Container, Text, Button, useToast } from "@chakra-ui/react";
 import Graph from "../components/Graph";
 import Loading from "../components/Loading";
-import Error from "../components/Error";
 import { useRouter } from "next/router";
 
 import useSWR from "swr";
@@ -13,7 +12,7 @@ type Status = "info" | "warning" | "success" | "error";
 
 const UserPage = () => {
   const { query, isReady } = useRouter();
-  const user = Array.isArray(query.user) ? query.user[0] : query.user;
+  const user = Array.isArray(query.user) ? query.user[0] : query.user ?? "";
 
   const toast = useToast();
 
@@ -26,7 +25,7 @@ const UserPage = () => {
     });
   };
 
-  const { data, error } = useSWR(`${user}`, getGraph, {
+  const { data } = useSWR(`${user}`, getGraph, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
@@ -50,9 +49,7 @@ const UserPage = () => {
         spacing={{ base: 8, md: 10 }}
         py={{ base: 10, md: 14 }}
       >
-        {error ? (
-          <Error msg={`An error has occurred.${error}`}></Error>
-        ) : !data || !isReady ? (
+        {!data || !isReady ? (
           <Loading />
         ) : (
           <Container>
