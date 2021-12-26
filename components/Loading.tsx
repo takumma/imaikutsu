@@ -1,12 +1,7 @@
-import { CircularProgress } from "@chakra-ui/progress"
+import { CircularProgress } from "@chakra-ui/progress";
 
 const Loading = () => {
-  return (
-    <CircularProgress
-      isIndeterminate
-      color="black"
-    />
-  )
-}
+  return <CircularProgress isIndeterminate color="black" />;
+};
 
-export default Loading
+export default Loading;
