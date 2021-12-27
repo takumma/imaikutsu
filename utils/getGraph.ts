@@ -1,33 +1,8 @@
-import {
-  collection,
-  DocumentData,
-  FirestoreDataConverter,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { GraphData, MentalValue } from "../types";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { graphDataConverter, MentalValue } from "../types";
 import { firestore } from "./firebase";
 
-function assertGraphData(data: DocumentData): asserts data is GraphData {
-  const d = data as Partial<GraphData>;
-  if (
-    !(typeof d?.mentalValues === "object" && typeof d?.screen_name === "string")
-  ) {
-    throw new Error("data is not GraphData type");
-  }
-}
-
 const getGraph = async (user: string): Promise<MentalValue[]> => {
-  const graphDataConverter: FirestoreDataConverter<GraphData> = {
-    toFirestore: (user) => user,
-    fromFirestore: (snapshot, options) => {
-      const data = snapshot.data(options);
-      assertGraphData(data);
-      return data;
-    },
-  };
-
   const q = query(
     collection(firestore, "graphs"),
     where("screen_name", "==", `${user}`)

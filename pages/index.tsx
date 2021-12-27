@@ -9,42 +9,15 @@ import FeaturesBlock from "../components/FeaturesBlock";
 import Heroes from "../components/Heroes";
 import OwnButton from "../components/OwnButton";
 import { onAuthStateChanged, User } from "firebase/auth";
-import {
-  doc,
-  DocumentData,
-  FirestoreDataConverter,
-  getDoc,
-} from "firebase/firestore";
-import { UserData } from "../types";
+import { doc, getDoc } from "firebase/firestore";
+import { userDataConverter } from "../types";
 
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
 
-  function assertUserData(data: DocumentData): asserts data is UserData {
-    const d = data as Partial<UserData>;
-    if (
-      !(
-        typeof d?.uid === "string" &&
-        typeof d?.screenName === "string" &&
-        typeof d?.isActive === "boolean"
-      )
-    ) {
-      throw new Error("data is not UserData type");
-    }
-  }
-
   useEffect(() => {
-    const userDataConverter: FirestoreDataConverter<UserData> = {
-      toFirestore: (user) => user,
-      fromFirestore: (snapshot, options) => {
-        const data = snapshot.data(options);
-        assertUserData(data);
-        return data;
-      },
-    };
-
     const getscreenName = async (user: User): Promise<string> => {
       return await getDoc(
         doc(firestore, "users", `${user.uid}`).withConverter(userDataConverter)

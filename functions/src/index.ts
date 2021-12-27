@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { UserData } from "../../types";
+import { assertUserData, UserData } from "../../types";
 import Twitter from "twitter";
 
 // setting about dayjs and timezone
@@ -13,9 +13,23 @@ dayjs.tz.setDefault("Asia/Tokyo");
 process.env.TZ = "Asia/Tokyo";
 
 // setting about firebase
-const serviceAccount = require("../serviceAccountKey.json");
+import serviceAccount from "../serviceAccountKey.json";
+
+const serviceAccountObject = {
+  type: serviceAccount.type,
+  projectId: serviceAccount.project_id,
+  privateKeyId: serviceAccount.private_key_id,
+  privateKey: serviceAccount.private_key,
+  clientEmail: serviceAccount.client_email,
+  clientId: serviceAccount.client_id,
+  authUri: serviceAccount.auth_uri,
+  tokenUri: serviceAccount.token_uri,
+  authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
+  clientC509CertUrl: serviceAccount.client_x509_cert_url,
+};
+
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccountObject),
   databaseURL: "firebase-adminsdk-qhq36@imaikutsu.iam.gserviceaccount.com",
 });
 
@@ -31,7 +45,7 @@ exports.scheduledFunction = functions
   .region("asia-northeast1")
   .pubsub.schedule("0 0 * * *")
   .timeZone("Asia/Tokyo")
-  .onRun((context) => {
+  .onRun(() => {
     const timestamp = dayjs().tz().format("YYYY-MM-DD-HH-mm");
 
     void getActiveUsers().then((users) => {
@@ -39,10 +53,20 @@ exports.scheduledFunction = functions
     });
   });
 
+const userDataConverter: admin.firestore.FirestoreDataConverter<UserData> = {
+  toFirestore: (user) => user,
+  fromFirestore: (snapshot: admin.firestore.QueryDocumentSnapshot) => {
+    const data = snapshot.data();
+    assertUserData(data);
+    return data;
+  },
+};
+
 // get active user (isActive == true) from firestore
 const getActiveUsers = async (): Promise<UserData[]> => {
   return firestore
     .collection("users")
+    .withConverter(userDataConverter)
     .where("isActive", "==", true)
     .get()
     .then((querySnapShot) => {
