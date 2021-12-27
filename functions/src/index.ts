@@ -14,6 +14,7 @@ process.env.TZ = "Asia/Tokyo";
 
 // setting about firebase
 import serviceAccount from "../serviceAccountKey.json";
+import { config } from "./declarations";
 
 const serviceAccountObject = {
   type: serviceAccount.type,
@@ -35,13 +36,15 @@ admin.initializeApp({
 
 const firestore = admin.firestore();
 
-const consumerkey = functions.config().functions.consumer_key;
-const consumerSecret = functions.config().functions.consumer_secret;
-const accessTokenKey = functions.config().functions.access_token_key;
-const accessTokenSecret = functions.config().functions.access_token_secret;
+const firebaseConfig = functions.config() as config.Config;
+
+const consumerkey = firebaseConfig.functions.consumer_key;
+const consumerSecret = firebaseConfig.functions.consumer_secret;
+const accessTokenKey = firebaseConfig.functions.access_token_key;
+const accessTokenSecret = firebaseConfig.functions.access_token_secret;
 
 // Scheduler of request about mentalValues
-exports.scheduledFunction = functions
+export const getMentalValuesScheduler = functions
   .region("asia-northeast1")
   .pubsub.schedule("0 0 * * *")
   .timeZone("Asia/Tokyo")
