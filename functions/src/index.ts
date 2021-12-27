@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { UserData } from "../../types";
-import Twitter from "twitter";
 import TwitterApi from "twitter-api-v2";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
@@ -10,6 +9,7 @@ import serviceAccount from "../serviceAccountKey.json";
 import { config } from "./declarations";
 import { getMentalValueFromName } from "./utils/getMentalValueFromName";
 import { getActiveUsers } from "./utils/getActiveUsers";
+import { UserDetail } from "./function_types";
 
 // setting about dayjs and timezone
 dayjs.extend(timezone);
@@ -44,15 +44,42 @@ export const getMentalValuesScheduler = functions
   .region("asia-northeast1")
   .pubsub.schedule("0 0 * * *")
   .timeZone("Asia/Tokyo")
-  .onRun(() => {
-    const timestamp = dayjs().tz().format("YYYY-MM-DD-HH-mm");
+  .onRun(async () => {
+    const timeStamp = getTimeStamp();
 
-    void getActiveUsers().then((users) => {
-      showRequest(users, timestamp);
-    });
+    const users = await getActiveUsers();
+    const userDetails = await getNameAndMentalValueFromTwitter(users);
+    await addMentalValuesToFireStore(userDetails, timeStamp);
   });
 
-const func = async (userDatas: UserData[]) => {
+const getTimeStamp = () => dayjs().tz().format("YYYY-MM-DD-HH-mm");
+
+const addMentalValuesToFireStore = async (
+  userDetails: UserDetail[],
+  timeStamp: string
+) => {
+  const addMentalValue = async (userDetail: UserDetail): Promise<void> => {
+    await firestore
+      .collection("graphs")
+      .doc(userDetail.user.uid)
+      .update({
+        mentalValues: admin.firestore.FieldValue.arrayUnion({
+          time_stamp: timeStamp,
+          value: userDetail.currentMentalValue,
+        }),
+      });
+  };
+
+  const requests: Promise<void>[] = [];
+  for (let i = 0; i < userDetails.length; i++) {
+    requests.push(addMentalValue(userDetails[i]));
+  }
+  await Promise.all(requests);
+};
+
+const getNameAndMentalValueFromTwitter = async (
+  userDatas: UserData[]
+): Promise<UserDetail[]> => {
   const twitterClient = new TwitterApi({
     appKey: firebaseConfig.functions.consumer_key,
     appSecret: firebaseConfig.functions.consumer_secret,
@@ -61,29 +88,12 @@ const func = async (userDatas: UserData[]) => {
   });
   const appOnlyClient = twitterClient.readOnly;
 
-  const getNames = async (users: UserData[]) => {
+  const getNames = async (users: UserData[]): Promise<string[]> => {
     // Up to 100 are allowed
     const result = await appOnlyClient.v2.usersByUsernames(
       users.map((user) => user.screenName)
     );
     return result.data.map((user) => user.name);
-  };
-
-  const addMentalValue = async (
-    user: UserData,
-    name: string,
-    timeStamp: string
-  ) => {
-    const mentalValue = getMentalValueFromName(name);
-    await firestore
-      .collection("graphs")
-      .doc(user.uid)
-      .update({
-        mentalValues: admin.firestore.FieldValue.arrayUnion({
-          time_stamp: timeStamp,
-          value: mentalValue,
-        }),
-      });
   };
 
   const userNamesMaxLength = 100;
@@ -94,39 +104,25 @@ const func = async (userDatas: UserData[]) => {
   }
   const twitterResult = await Promise.all(twitterRequests);
 
-  // todo
-};
+  // convert Two-dimensional -> One-dimensional array
+  // ex: [["a", "b"], ["c", "d"]] -> ["a", "b", "c", "d"]
+  const names = twitterResult.reduce((prev, current) => {
+    prev.push(...current);
+    return prev;
+  }, []);
 
-const showRequest = (users: UserData[], timeStamp: string) => {
-  const MaxParallelNum = 5;
+  const userDetails: UserDetail[] = [];
 
-  const client = new Twitter({
-    ...firebaseConfig.functions,
-  });
-
-  // Get the name from twitter for each user,
-  // And add mentalValue taken from name to firestore array with timestamp.
-  for (let i = 0; i < users.length; i += MaxParallelNum) {
-    const requests = users.slice(i, i + MaxParallelNum).map((user) =>
-      (async () => {
-        const resp = await client.get("users/show", {
-          screen_name: user.screenName,
-        });
-        const mentalValue = getMentalValueFromName(resp.name);
-        if (mentalValue) {
-          await firestore
-            .collection("graphs")
-            .doc(user.uid)
-            .update({
-              mentalValues: admin.firestore.FieldValue.arrayUnion({
-                time_stamp: timeStamp,
-                value: mentalValue,
-              }),
-            });
-        }
-      })()
-    );
-
-    void Promise.all(requests);
+  for (let i = 0; i < userDatas.length; i++) {
+    const mentalValue = getMentalValueFromName(names[i]);
+    if (mentalValue) {
+      userDetails.push({
+        user: userDatas[i],
+        name: names[i],
+        currentMentalValue: mentalValue,
+      });
+    }
   }
+
+  return userDetails;
 };

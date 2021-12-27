@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "tsc",
+    "build": "npm run lint && tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
@@ -17,7 +17,6 @@
     "dayjs": "^1.10.4",
     "firebase-admin": "^9.6.0",
     "firebase-functions": "^3.13.2",
-    "twitter": "^1.7.1",
     "twitter-api-v2": "^1.8.0"
   },
   "devDependencies": {
