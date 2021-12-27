@@ -1,21 +1,23 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { assertUserData, UserData } from "../../types";
+import { UserData } from "../../types";
 import Twitter from "twitter";
-
-// setting about dayjs and timezone
+import TwitterApi from "twitter-api-v2";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import serviceAccount from "../serviceAccountKey.json";
+import { config } from "./declarations";
+import { getMentalValueFromName } from "./utils/getMentalValueFromName";
+import { getActiveUsers } from "./utils/getActiveUsers";
+
+// setting about dayjs and timezone
 dayjs.extend(timezone);
 dayjs.extend(utc);
 dayjs.tz.setDefault("Asia/Tokyo");
 process.env.TZ = "Asia/Tokyo";
 
 // setting about firebase
-import serviceAccount from "../serviceAccountKey.json";
-import { config } from "./declarations";
-
 const serviceAccountObject = {
   type: serviceAccount.type,
   projectId: serviceAccount.project_id,
@@ -35,13 +37,7 @@ admin.initializeApp({
 });
 
 const firestore = admin.firestore();
-
 const firebaseConfig = functions.config() as config.Config;
-
-const consumerkey = firebaseConfig.functions.consumer_key;
-const consumerSecret = firebaseConfig.functions.consumer_secret;
-const accessTokenKey = firebaseConfig.functions.access_token_key;
-const accessTokenSecret = firebaseConfig.functions.access_token_secret;
 
 // Scheduler of request about mentalValues
 export const getMentalValuesScheduler = functions
@@ -56,44 +52,56 @@ export const getMentalValuesScheduler = functions
     });
   });
 
-const userDataConverter: admin.firestore.FirestoreDataConverter<UserData> = {
-  toFirestore: (user) => user,
-  fromFirestore: (snapshot: admin.firestore.QueryDocumentSnapshot) => {
-    const data = snapshot.data();
-    assertUserData(data);
-    return data;
-  },
-};
+const func = async (userDatas: UserData[]) => {
+  const twitterClient = new TwitterApi({
+    appKey: firebaseConfig.functions.consumer_key,
+    appSecret: firebaseConfig.functions.consumer_secret,
+    accessToken: firebaseConfig.functions.access_token_key,
+    accessSecret: firebaseConfig.functions.access_token_secret,
+  });
+  const appOnlyClient = twitterClient.readOnly;
 
-// get active user (isActive == true) from firestore
-const getActiveUsers = async (): Promise<UserData[]> => {
-  return firestore
-    .collection("users")
-    .withConverter(userDataConverter)
-    .where("isActive", "==", true)
-    .get()
-    .then((querySnapShot) => {
-      const users: UserData[] = [];
-      querySnapShot.forEach((doc) => {
-        const data = doc.data();
-        users.push({
-          uid: data.uid,
-          screenName: data.screenName,
-          isActive: true,
-        });
+  const getNames = async (users: UserData[]) => {
+    // Up to 100 are allowed
+    const result = await appOnlyClient.v2.usersByUsernames(
+      users.map((user) => user.screenName)
+    );
+    return result.data.map((user) => user.name);
+  };
+
+  const addMentalValue = async (
+    user: UserData,
+    name: string,
+    timeStamp: string
+  ) => {
+    const mentalValue = getMentalValueFromName(name);
+    await firestore
+      .collection("graphs")
+      .doc(user.uid)
+      .update({
+        mentalValues: admin.firestore.FieldValue.arrayUnion({
+          time_stamp: timeStamp,
+          value: mentalValue,
+        }),
       });
-      return users;
-    });
+  };
+
+  const userNamesMaxLength = 100;
+  const twitterRequests = [];
+  for (let i = 0; i < userDatas.length; i += userNamesMaxLength) {
+    const users = userDatas.slice(i, i + userNamesMaxLength);
+    twitterRequests.push(getNames(users));
+  }
+  const twitterResult = await Promise.all(twitterRequests);
+
+  // todo
 };
 
 const showRequest = (users: UserData[], timeStamp: string) => {
   const MaxParallelNum = 5;
 
   const client = new Twitter({
-    consumer_key: consumerkey,
-    consumer_secret: consumerSecret,
-    access_token_key: accessTokenKey,
-    access_token_secret: accessTokenSecret,
+    ...firebaseConfig.functions,
   });
 
   // Get the name from twitter for each user,
@@ -120,21 +128,5 @@ const showRequest = (users: UserData[], timeStamp: string) => {
     );
 
     void Promise.all(requests);
-  }
-};
-
-// Get the mental value from the end of the name.
-const getMentalValueFromName = (name: string | null): number | null => {
-  if (name === null) return null;
-
-  const doubleDigit = Number(name.slice(-2));
-  const singleDigit = Number(name.slice(-1));
-
-  if (isNaN(doubleDigit)) {
-    if (!isNaN(singleDigit)) return singleDigit;
-    else return null;
-  } else {
-    if (doubleDigit > 10) return singleDigit;
-    else return doubleDigit;
   }
 };
