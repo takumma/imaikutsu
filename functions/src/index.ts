@@ -2,20 +2,8 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { UserData } from "../../types";
 import TwitterApi from "twitter-api-v2";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import serviceAccount from "../serviceAccountKey.json";
 import { config } from "./declarations";
-import { getMentalValueFromName } from "./utils/getMentalValueFromName";
-import { getActiveUsers } from "./utils/getActiveUsers";
-import { UserDetail } from "./function_types";
-
-// setting about dayjs and timezone
-dayjs.extend(timezone);
-dayjs.extend(utc);
-dayjs.tz.setDefault("Asia/Tokyo");
-process.env.TZ = "Asia/Tokyo";
 
 // setting about firebase
 const serviceAccountObject = {
@@ -38,6 +26,20 @@ admin.initializeApp({
 
 const firestore = admin.firestore();
 const firebaseConfig = functions.config() as config.Config;
+
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+// setting about dayjs and timezone
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.tz.setDefault("Asia/Tokyo");
+process.env.TZ = "Asia/Tokyo";
+
+import { getMentalValueFromName } from "./utils/getMentalValueFromName";
+import { getActiveUsers } from "./utils/getActiveUsers";
+import { UserDetail } from "./function_types";
 
 // Scheduler of request about mentalValues
 export const getMentalValuesScheduler = functions

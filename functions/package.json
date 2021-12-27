@@ -12,7 +12,7 @@
   "engines": {
     "node": "10"
   },
-  "main": "lib/index.js",
+  "main": "lib/functions/src/index.js",
   "dependencies": {
     "dayjs": "^1.10.4",
     "firebase-admin": "^9.6.0",
