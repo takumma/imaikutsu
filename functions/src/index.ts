@@ -82,17 +82,15 @@ const addMentalValuesToFireStore = async (
 const getNameAndMentalValueFromTwitter = async (
   userDatas: UserData[]
 ): Promise<UserDetail[]> => {
-  const twitterClient = new TwitterApi({
+  const consumerClient = new TwitterApi({
     appKey: firebaseConfig.functions.consumer_key,
     appSecret: firebaseConfig.functions.consumer_secret,
-    accessToken: firebaseConfig.functions.access_token_key,
-    accessSecret: firebaseConfig.functions.access_token_secret,
   });
-  const appOnlyClient = twitterClient.readOnly;
+  const client = await consumerClient.appLogin();
 
   const getNames = async (users: UserData[]): Promise<string[]> => {
     // Up to 100 are allowed
-    const result = await appOnlyClient.v2.usersByUsernames(
+    const result = await client.v2.usersByUsernames(
       users.map((user) => user.screenName)
     );
     return result.data.map((user) => user.name);
