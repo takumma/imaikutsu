@@ -15,6 +15,7 @@ declare namespace config {
       consumer_secret: string;
       access_token_key: string;
       access_token_secret: string;
+      bearer: string;
     };
   }
   /** @hidden */

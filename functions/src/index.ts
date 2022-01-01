@@ -41,6 +41,14 @@ import { getMentalValueFromName } from "./utils/getMentalValueFromName";
 import { getActiveUsers } from "./utils/getActiveUsers";
 import { UserDetail } from "./function_types";
 
+export const sample = functions.https.onRequest(async () => {
+  const timeStamp = getTimeStamp();
+  console.log(firebaseConfig.functions);
+  const users = await getActiveUsers();
+  const userDetails = await getNameAndMentalValueFromTwitter(users);
+  await addMentalValuesToFireStore(userDetails, timeStamp);
+});
+
 // Scheduler of request about mentalValues
 export const getMentalValuesScheduler = functions
   .region("asia-northeast1")
@@ -82,11 +90,9 @@ const addMentalValuesToFireStore = async (
 const getNameAndMentalValueFromTwitter = async (
   userDatas: UserData[]
 ): Promise<UserDetail[]> => {
-  const consumerClient = new TwitterApi({
-    appKey: firebaseConfig.functions.consumer_key,
-    appSecret: firebaseConfig.functions.consumer_secret,
-  });
-  const client = await consumerClient.appLogin();
+  const consumerClient = new TwitterApi(firebaseConfig.functions.bearer);
+
+  const client = consumerClient.readOnly;
 
   const getNames = async (users: UserData[]): Promise<string[]> => {
     // Up to 100 are allowed
