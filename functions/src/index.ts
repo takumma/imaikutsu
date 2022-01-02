@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { UserData } from "../../types";
-import TwitterApi from "twitter-api-v2";
+import { TwitterApi, TwitterApiV2Settings } from "twitter-api-v2";
+TwitterApiV2Settings.debug = true;
 import serviceAccount from "../serviceAccountKey.json";
 import { config } from "./declarations";
 
@@ -45,6 +46,8 @@ export const sample = functions.https.onRequest(async () => {
   const timeStamp = getTimeStamp();
   console.log(firebaseConfig.functions);
   const users = await getActiveUsers();
+  console.log(users);
+
   const userDetails = await getNameAndMentalValueFromTwitter(users);
   await addMentalValuesToFireStore(userDetails, timeStamp);
 });
@@ -90,9 +93,7 @@ const addMentalValuesToFireStore = async (
 const getNameAndMentalValueFromTwitter = async (
   userDatas: UserData[]
 ): Promise<UserDetail[]> => {
-  const consumerClient = new TwitterApi(firebaseConfig.functions.bearer);
-
-  const client = consumerClient.readOnly;
+  const client = new TwitterApi(firebaseConfig.functions.bearer);
 
   const getNames = async (users: UserData[]): Promise<string[]> => {
     // Up to 100 are allowed
