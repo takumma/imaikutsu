@@ -1,8 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { UserData } from "../../types";
-import { TwitterApi, TwitterApiV2Settings } from "twitter-api-v2";
-TwitterApiV2Settings.debug = true;
+import { TwitterApi } from "twitter-api-v2";
 import serviceAccount from "../serviceAccountKey.json";
 import { config } from "./declarations";
 
@@ -41,16 +40,6 @@ process.env.TZ = "Asia/Tokyo";
 import { getMentalValueFromName } from "./utils/getMentalValueFromName";
 import { getActiveUsers } from "./utils/getActiveUsers";
 import { UserDetail } from "./function_types";
-
-export const sample = functions.https.onRequest(async () => {
-  const timeStamp = getTimeStamp();
-  console.log(firebaseConfig.functions);
-  const users = await getActiveUsers();
-  console.log(users);
-
-  const userDetails = await getNameAndMentalValueFromTwitter(users);
-  await addMentalValuesToFireStore(userDetails, timeStamp);
-});
 
 // Scheduler of request about mentalValues
 export const getMentalValuesScheduler = functions
