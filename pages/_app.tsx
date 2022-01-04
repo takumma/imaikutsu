@@ -20,18 +20,16 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Box>
-        <Flex
-          bg={useColorModeValue("white", "gray.800")}
-          color={useColorModeValue("gray.600", "white")}
-          py={{ base: 4 }}
-          px={{ base: 2 }}
-        >
-          <Link onClick={() => router.push("/")}>
-            <Image src={"images/logo.png"} alt={"logo"} width={"200px"} />
-          </Link>
-        </Flex>
-      </Box>
+      <Flex
+        bg={useColorModeValue("white", "gray.800")}
+        color={useColorModeValue("gray.600", "white")}
+        py={{ base: 4 }}
+        px={{ base: 2 }}
+      >
+        <Link onClick={() => router.push("/")}>
+          <Image src={"images/logo.png"} alt={"logo"} width={"200px"} />
+        </Link>
+      </Flex>
       <Component {...pageProps} />
       <Box
         bg={useColorModeValue("gray.50", "gray.900")}

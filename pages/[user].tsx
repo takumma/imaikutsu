@@ -60,25 +60,7 @@ const UserPage = () => {
             >
               {user}さんのグラフ
             </Text>
-            <Stack shouldWrapChildren={true}>
-              <Graph data={data} />
-            </Stack>
             <Graph data={data} />
-            {/* <Text
-                fontSize={{ base: 'xl', sm: 'xl', md: 'xl' }}
-                fontWeight={600}
-                mt={36}
-                mb={12}
-              >
-                設定
-              </Text>
-              <FormControl display="flex">
-                <FormLabel>
-                  記録をする
-                </FormLabel>
-                <Switch />
-              </FormControl> */}
-
             <Button
               mt={36}
               variant={"link"}
