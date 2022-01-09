@@ -7,6 +7,7 @@ import useSWR from "swr";
 import getGraph from "../utils/getGraph";
 import { auth } from "../utils/firebase";
 import { signOut } from "firebase/auth";
+import Seo from "../components/Seo";
 
 type Status = "info" | "warning" | "success" | "error";
 
@@ -43,6 +44,7 @@ const UserPage = () => {
 
   return (
     <Container w={"5x1"}>
+      <Seo title={`@${user}`} />
       <Stack
         textAlign={"center"}
         align={"center"}
@@ -58,7 +60,7 @@ const UserPage = () => {
               fontWeight={600}
               mb={12}
             >
-              {user}さんのグラフ
+              @{user}さんのグラフ
             </Text>
             <Graph data={data} />
             <Button
