@@ -10,7 +10,7 @@ import { signOut } from "firebase/auth";
 
 type Status = "info" | "warning" | "success" | "error";
 
-export const UserPage = () => {
+const UserPage = () => {
   const { query, isReady } = useRouter();
   const user = Array.isArray(query.user) ? query.user[0] : query.user ?? "";
 
@@ -85,3 +85,5 @@ export const UserPage = () => {
     </Container>
   );
 };
+
+export default UserPage;
