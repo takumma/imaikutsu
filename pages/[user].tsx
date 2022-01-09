@@ -10,7 +10,7 @@ import { signOut } from "firebase/auth";
 
 type Status = "info" | "warning" | "success" | "error";
 
-const UserPage = () => {
+export const UserPage = () => {
   const { query, isReady } = useRouter();
   const user = Array.isArray(query.user) ? query.user[0] : query.user ?? "";
 
@@ -51,7 +51,7 @@ const UserPage = () => {
       >
         {!data || !isReady ? (
           <Loading />
-        ) : (
+        ) : data.length !== 0 ? (
           <Container>
             <Text
               fontSize={{ base: "xl", sm: "xl", md: "xl" }}
@@ -70,10 +70,18 @@ const UserPage = () => {
               ログアウト
             </Button>
           </Container>
+        ) : (
+          <Container>
+            <Text
+              fontSize={{ base: "xl", sm: "xl", md: "xl" }}
+              fontWeight={600}
+              mb={12}
+            >
+              {user}さんのデータはありません。
+            </Text>
+          </Container>
         )}
       </Stack>
     </Container>
   );
 };
-
-export default UserPage;
