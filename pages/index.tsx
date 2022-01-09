@@ -69,15 +69,6 @@ export default function Home() {
                 onClick={() => router.push(`/${name}`)}
               />
             </HStack>
-            {/* <HStack>
-              <Button
-                variant={'link'}
-                colorScheme={'blue'}
-                onClick={() => {}}
-              >
-                Learn more
-              </Button>
-            </HStack> */}
           </Stack>
         ) : (
           <HStack>

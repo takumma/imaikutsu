@@ -51,7 +51,7 @@ const UserPage = () => {
       >
         {!data || !isReady ? (
           <Loading />
-        ) : (
+        ) : data.length !== 0 ? (
           <Container>
             <Text
               fontSize={{ base: "xl", sm: "xl", md: "xl" }}
@@ -69,6 +69,16 @@ const UserPage = () => {
             >
               ログアウト
             </Button>
+          </Container>
+        ) : (
+          <Container>
+            <Text
+              fontSize={{ base: "xl", sm: "xl", md: "xl" }}
+              fontWeight={600}
+              mb={12}
+            >
+              {user}さんのデータはありません。
+            </Text>
           </Container>
         )}
       </Stack>
