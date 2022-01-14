@@ -75,11 +75,11 @@ const UserPage = () => {
         ) : (
           <Container>
             <Text
-              fontSize={{ base: "xl", sm: "xl", md: "xl" }}
-              fontWeight={600}
+              fontSize={{ base: "md", sm: "md", md: "lg" }}
+              fontWeight={400}
               mb={12}
             >
-              {user}さんのデータはありません。
+              @{user}さんのデータはありません。
             </Text>
           </Container>
         )}

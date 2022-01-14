@@ -18,11 +18,12 @@ const Graph = (props: { data: MentalValue[] }) => (
         <Line
           type="monotone"
           dataKey="value"
-          name="メンタル値"
+          name="記録された数字"
           stroke="#48BB78"
           fill="#48BB78"
           strokeWidth={5}
-          dot={false}
+          r={2.5}
+          dot={true}
           activeDot={{ fill: "#48BB78", strokeWidth: 2, r: 6 }}
         />
         <Brush
