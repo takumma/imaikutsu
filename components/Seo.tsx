@@ -9,7 +9,8 @@ export type SeoProps = {
 
 const Seo = ({ title, imgUrl, url, description }: SeoProps) => {
   const defaultTitle = "imaikutsu?";
-  const defaultImgUrl = "";
+  const defaultImgUrl =
+    "https://res.cloudinary.com/dykntmxnh/image/upload/v1642257415/imaikutsu.png";
   const defaultUrl = "https://imaikutsu.takumma.net/";
   const defaultDescription = "";
   const siteName = "imaikutsu?";

@@ -1,4 +1,3 @@
-import Head from "next/head";
 import OAuthButton from "../components/OAuthButton";
 import Loading from "../components/Loading";
 import { Container, HStack, Stack } from "@chakra-ui/react";
@@ -11,6 +10,7 @@ import OwnButton from "../components/OwnButton";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { userDataConverter } from "../types";
+import Seo from "../components/Seo";
 
 export default function Home() {
   const router = useRouter();
@@ -49,9 +49,7 @@ export default function Home() {
 
   return (
     <Container maxW={"5xl"}>
-      <Head>
-        <title>imaikutsu?</title>
-      </Head>
+      <Seo />
       <Stack
         textAlign={"center"}
         align={"center"}
