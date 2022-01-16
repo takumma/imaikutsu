@@ -25,7 +25,7 @@ const Feature = (props: FeatureProps) => {
       >
         {props.index + 1}
       </Flex>
-      <Text fontSize={{ base: "xl", sm: "xl", md: "xl" }} fontWeight={600}>
+      <Text fontSize={{ base: "xl" }} fontWeight={600}>
         {props.title}
       </Text>
       {props.image}
