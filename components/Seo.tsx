@@ -33,6 +33,7 @@ const Seo = ({ title, imgUrl, url, description }: SeoProps) => {
       <meta property="og:image" content={ogImage} />
       <meta property="og:site_name" content={siteName} />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta property="twitter:description" content={pageDescription} />
       <link rel="canonical" href={siteUrl} />
     </Head>
   );
