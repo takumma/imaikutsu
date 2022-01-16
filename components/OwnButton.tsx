@@ -9,6 +9,7 @@ const OwnButton = (props: OwnButtonProps) => {
   return (
     <Button
       rounded={"full"}
+      fontWeight={500}
       bg={"green.400"}
       p={6}
       color={"white"}

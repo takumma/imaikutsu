@@ -63,7 +63,7 @@ export default function Home() {
           <Stack align={"Center"}>
             <HStack mb={2}>
               <OwnButton
-                label={"グラフをみる"}
+                label={"あなたの記録を見る"}
                 onClick={() => router.push(`/${name}`)}
               />
             </HStack>

@@ -6,7 +6,6 @@ import {
   Stack,
   useColorModeValue,
   Text,
-  Flex,
   Link,
 } from "@chakra-ui/react";
 import React from "react";
@@ -20,18 +19,18 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Container maxW={"4x1"}>
-        <Flex
-          bg={useColorModeValue("white", "gray.800")}
-          color={useColorModeValue("gray.600", "white")}
-          py={{ base: 4 }}
-          px={{ base: 3 }}
-        >
+      <Box
+        bg={useColorModeValue("white", "gray.800")}
+        color={useColorModeValue("gray.600", "white")}
+        py={{ base: 4 }}
+        px={{ base: 3 }}
+      >
+        <Container maxW={"5xl"}>
           <Link onClick={() => router.push("/")}>
             <ImaikutsuSvg height={36} width={180} viewBox="0 0 911 191" />
           </Link>
-        </Flex>
-      </Container>
+        </Container>
+      </Box>
       <Component {...pageProps} />
       <Box
         bg={useColorModeValue("gray.50", "gray.900")}
