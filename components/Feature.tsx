@@ -17,7 +17,7 @@ const Feature = (props: FeatureProps) => {
         align={"center"}
         justify={"center"}
         color={"white"}
-        bg={"green.400"}
+        bg={"green.300"}
         rounded={"full"}
         boxShadow={"0 5px 20px 0px rgb(72 187 120 / 43%)"}
         fontWeight={"600"}

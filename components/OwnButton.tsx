@@ -10,12 +10,12 @@ const OwnButton = (props: OwnButtonProps) => {
     <Button
       rounded={"full"}
       fontWeight={500}
-      bg={"green.400"}
+      bg={"green.300"}
       p={6}
       color={"white"}
       boxShadow={"0 5px 20px 0px rgb(72 187 120 / 43%)"}
       _hover={{
-        bg: "green.500",
+        bg: "green.400",
       }}
       _focus={{
         bg: "green.500",

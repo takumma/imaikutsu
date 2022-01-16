@@ -28,7 +28,7 @@ const Graph = (props: { data: MentalValue[] }) => (
         />
         <Brush
           height={30}
-          stroke="#48BB78"
+          stroke="#68D391"
           startIndex={props.data.length - 14}
         />
       </LineChart>
