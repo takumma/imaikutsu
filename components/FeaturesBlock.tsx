@@ -7,12 +7,12 @@ import Feature3 from "../assets/feature_3.svg";
 const STEPS = [
   {
     title: "Twitter ログイン",
-    text: "まずは、自分の Twitter アカウントでログインしてください。",
+    text: "まずは自分の Twitter アカウントでログインして、「imaikutsu?」と Twitter を連携してください。",
     image: <Feature1 height={200} width={200} viewBox="0 0 164 64" />,
   },
   {
     title: "Twitter で記録する",
-    text: "ユーザー名の後ろに体調を表す数字を入れましょう。定期的に自分に「いまいくつ？」と問いかけて記録していきましょう。メンタル値は一日1回記録されていきます。",
+    text: "Twitter のユーザー名の後ろに体調を表す数字を入れましょう。定期的に、自分に「いまいくつ？」と問いかけて記録していきましょう。数字は一日一回記録されていきます。",
     image: <Feature2 height={200} width={200} viewBox="0 0 186 118" />,
   },
   {

@@ -11,6 +11,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { userDataConverter } from "../types";
 import Seo from "../components/Seo";
+import AboutNumCard from "../components/AboutNum";
 
 export default function Home() {
   const router = useRouter();
@@ -74,6 +75,7 @@ export default function Home() {
           </HStack>
         )}
         <FeaturesBlock />
+        <AboutNumCard />
       </Stack>
     </Container>
   );
