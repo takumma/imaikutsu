@@ -8,12 +8,23 @@ import getGraph from "../utils/getGraph";
 import { auth } from "../utils/firebase";
 import { signOut } from "firebase/auth";
 import Seo from "../components/Seo";
+import {
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from "next/types";
+import { ParsedUrlQuery } from "querystring";
 
 type Status = "info" | "warning" | "success" | "error";
 
-const UserPage = () => {
+type UerPageProps = { ssQuery?: ParsedUrlQuery };
+
+const UserPage = ({ ssQuery }: UerPageProps) => {
   const { query, isReady } = useRouter();
-  const user = Array.isArray(query.user) ? query.user[0] : query.user ?? "";
+
+  const srQuery = ssQuery ? ssQuery : query;
+  const user = Array.isArray(srQuery.user)
+    ? srQuery.user[0]
+    : srQuery.user ?? "";
 
   const toast = useToast();
 
@@ -89,3 +100,9 @@ const UserPage = () => {
 };
 
 export default UserPage;
+
+export function getServerSideProps(
+  ctx: GetServerSidePropsContext
+): GetServerSidePropsResult<UerPageProps> {
+  return { props: { ssQuery: ctx.query } };
+}
