@@ -12,7 +12,8 @@ const Seo = ({ title, imgUrl, url, description }: SeoProps) => {
   const defaultImgUrl =
     "https://res.cloudinary.com/dykntmxnh/image/upload/v1642257415/imaikutsu.png";
   const defaultUrl = "https://imaikutsu.takumma.net/";
-  const defaultDescription = "";
+  const defaultDescription =
+    "imaikutsu? は Twitter で毎日の体調を記録するサービスです。ユーザー名の後ろに付けた数字を、毎日記録してくれます。";
   const siteName = "imaikutsu?";
 
   const pageTitle = title ? `${title} / ${defaultTitle}` : defaultTitle;

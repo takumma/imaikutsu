@@ -44,7 +44,7 @@ const UserPage = () => {
 
   return (
     <Container w={"5x1"}>
-      <Seo title={`@${user}`} />
+      <Seo title={`@${user}`} description={`@${user}さんの体調の記録`} />
       <Stack
         textAlign={"center"}
         align={"center"}
