@@ -27,10 +27,13 @@
     "functions/src/**/*",
     "pages/**/*",
     "utils/**/*",
-    "types.ts"
+    "types.ts",
+    "index.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "functions"
+    "functions",
+    "next.config.js",
+    "prettierrc.config.js"
   ]
 }

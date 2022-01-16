@@ -6,30 +6,31 @@ import {
   Stack,
   useColorModeValue,
   Text,
-  Flex,
-  Image,
   Link,
 } from "@chakra-ui/react";
 import React from "react";
 import theme from "../theme";
 import SocialMediaLinks from "../components/SocialMediaLinks";
 import { useRouter } from "next/router";
+import ImaikutsuSvg from "../assets/imaikutsu.svg";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   return (
     <ChakraProvider theme={theme}>
-      <Flex
+      <Box
         bg={useColorModeValue("white", "gray.800")}
         color={useColorModeValue("gray.600", "white")}
         py={{ base: 4 }}
-        px={{ base: 2 }}
+        px={{ base: 3 }}
       >
-        <Link onClick={() => router.push("/")}>
-          <Image src={"images/logo.png"} alt={"logo"} width={"200px"} />
-        </Link>
-      </Flex>
+        <Container maxW={"5xl"}>
+          <Link onClick={() => router.push("/")}>
+            <ImaikutsuSvg height={36} width={180} viewBox="0 0 911 191" />
+          </Link>
+        </Container>
+      </Box>
       <Component {...pageProps} />
       <Box
         bg={useColorModeValue("gray.50", "gray.900")}

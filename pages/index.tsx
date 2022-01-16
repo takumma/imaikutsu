@@ -1,4 +1,3 @@
-import Head from "next/head";
 import OAuthButton from "../components/OAuthButton";
 import Loading from "../components/Loading";
 import { Container, HStack, Stack } from "@chakra-ui/react";
@@ -11,6 +10,7 @@ import OwnButton from "../components/OwnButton";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { userDataConverter } from "../types";
+import Seo from "../components/Seo";
 
 export default function Home() {
   const router = useRouter();
@@ -49,9 +49,7 @@ export default function Home() {
 
   return (
     <Container maxW={"5xl"}>
-      <Head>
-        <title>imaikutsu?</title>
-      </Head>
+      <Seo />
       <Stack
         textAlign={"center"}
         align={"center"}
@@ -65,7 +63,7 @@ export default function Home() {
           <Stack align={"Center"}>
             <HStack mb={2}>
               <OwnButton
-                label={"グラフをみる"}
+                label={"あなたの記録を見る"}
                 onClick={() => router.push(`/${name}`)}
               />
             </HStack>

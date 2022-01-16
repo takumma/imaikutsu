@@ -1,9 +1,9 @@
-import { Stack, Flex, Text, Image } from "@chakra-ui/react";
+import { Stack, Flex, Text } from "@chakra-ui/react";
 
 interface FeatureProps {
   title: string;
   text: string;
-  image: string;
+  image: JSX.Element;
   index: number;
 }
 
@@ -17,7 +17,7 @@ const Feature = (props: FeatureProps) => {
         align={"center"}
         justify={"center"}
         color={"white"}
-        bg={"green.400"}
+        bg={"green.300"}
         rounded={"full"}
         boxShadow={"0 5px 20px 0px rgb(72 187 120 / 43%)"}
         fontWeight={"600"}
@@ -28,11 +28,7 @@ const Feature = (props: FeatureProps) => {
       <Text fontSize={{ base: "xl", sm: "xl", md: "xl" }} fontWeight={600}>
         {props.title}
       </Text>
-      <Image
-        src={props.image}
-        alt={props.title}
-        width={{ base: "70%", md: "100%" }}
-      />
+      {props.image}
       <Text color={"gray.700"}>{props.text}</Text>
     </Stack>
   );
