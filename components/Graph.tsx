@@ -6,6 +6,7 @@ import {
   XAxis,
   Brush,
   ResponsiveContainer,
+  YAxis,
 } from "recharts";
 import { MentalValue } from "../types";
 
@@ -13,6 +14,7 @@ const Graph = (props: { data: MentalValue[] }) => (
   <Box width="100%">
     <ResponsiveContainer height={400}>
       <LineChart data={props.data}>
+        <YAxis hide domain={[0, 10]} />
         <XAxis dataKey="time_stamp" interval="preserveStartEnd" />
         <Tooltip itemStyle={{ color: "#000" }} />
         <Line
