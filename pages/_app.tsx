@@ -6,17 +6,14 @@ import {
   Stack,
   useColorModeValue,
   Text,
-  Link,
 } from "@chakra-ui/react";
 import React from "react";
 import theme from "../theme";
 import SocialMediaLinks from "../components/SocialMediaLinks";
-import { useRouter } from "next/router";
 import ImaikutsuSvg from "../assets/imaikutsu.svg";
+import Link from "next/link";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
   return (
     <ChakraProvider theme={theme}>
       <Box
@@ -26,8 +23,15 @@ function MyApp({ Component, pageProps }: AppProps) {
         px={{ base: 3 }}
       >
         <Container maxW={"5xl"}>
-          <Link onClick={() => router.push("/")}>
-            <ImaikutsuSvg height={36} width={180} viewBox="0 0 911 191" />
+          <Link href="/" as="/">
+            <a>
+              <ImaikutsuSvg
+                style={{ display: "inline" }}
+                height={36}
+                width={180}
+                viewBox="0 0 911 191"
+              />
+            </a>
           </Link>
         </Container>
       </Box>
