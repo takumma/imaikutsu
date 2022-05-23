@@ -2,14 +2,17 @@
 export const getMentalValueFromName = (name: string | null): number | null => {
   if (name === null) return null;
 
-  const doubleDigit = Number(name.slice(-2));
-  const singleDigit = Number(name.slice(-1));
+  const numStr = name.replace(/[^0-9]/g, "");
 
-  if (isNaN(doubleDigit)) {
-    if (!isNaN(singleDigit)) return singleDigit;
-    else return null;
-  } else {
-    if (doubleDigit > 10) return singleDigit;
-    else return doubleDigit;
+  const mentalValue = Number(numStr);
+
+  if (mentalValue < 1) return null;
+
+  if (mentalValue > 10) {
+    const num = mentalValue % 10;
+    if (num === 0) return null;
+    return num;
   }
+
+  return mentalValue;
 };
